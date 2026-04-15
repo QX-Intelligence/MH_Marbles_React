@@ -11,6 +11,7 @@ permissions:
 env:
   AWS_REGION: ap-south-2
   EC2_TARGET_DIR: /var/www/frontend
+  EC2_TAG_NAME: frontend-server
 
 jobs:
   build-and-deploy:
@@ -20,7 +21,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      #  Force clean workspace
       - name: Clean workspace
         run: |
           rm -rf node_modules
@@ -35,10 +35,9 @@ jobs:
         with:
           node-version: 18
 
-      #  Clean install (recommended)
       - name: Install Dependencies
         run: npm ci
-        
+
       - name: Cache Verify
         run: npm cache verify
 
@@ -57,7 +56,7 @@ jobs:
         with:
           tag_name: ${{ env.RELEASE_TAG }}
           name: MHMarbles_By_QI ${{ github.sha }}
-          files: mhmarbles.tar.gz
+          files: frontend.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -71,17 +70,20 @@ jobs:
       - name: Deploy to EC2 via SSM
         run: |
           aws ssm send-command \
-            --instance-ids ${{ secrets.EC2_INSTANCE_ID }} \
+            --targets "Key=tag:Name,Values=${EC2_TAG_NAME}" \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy frontend via GitHub release" \
-            --parameters commands="
-              RELEASE_URL=https://github.com/${{ github.repository }}/releases/download/${{ env.RELEASE_TAG }}/frontend.tar.gz,
-              rm -rf /tmp/frontend,
-              mkdir -p /tmp/frontend,
-              curl -L \$RELEASE_URL -o /tmp/frontend/frontend.tar.gz,
-              rm -rf $EC2_TARGET_DIR/*,
-              mkdir -p $EC2_TARGET_DIR,
-              tar -xzf /tmp/frontend/frontend.tar.gz -C $EC2_TARGET_DIR,
-              rm -rf /tmp/frontend,
-              ls -la $EC2_TARGET_DIR
-            "
+            --parameters 'commands=[
+              "set -e",
+              "RELEASE_URL=https://github.com/${{ github.repository }}/releases/download/${{ env.RELEASE_TAG }}/frontend.tar.gz",
+              "rm -rf /tmp/frontend",
+              "mkdir -p /tmp/frontend",
+              "curl -L $RELEASE_URL -o /tmp/frontend/frontend.tar.gz",
+              "rm -rf '"$EC2_TARGET_DIR"'/*",
+              "mkdir -p '"$EC2_TARGET_DIR"'",
+              "tar -xzf /tmp/frontend/frontend.tar.gz -C '"$EC2_TARGET_DIR"'",
+              "rm -rf /tmp/frontend",
+              "ls -la '"$EC2_TARGET_DIR"'"
+            ]' \
+            --region $AWS_REGION \
+            --output text
