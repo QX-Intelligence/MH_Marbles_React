@@ -4,7 +4,7 @@ import { JournalEntry } from '@/types/gallery';
 export const BlogService = {
   getAllBlogs: async (): Promise<JournalEntry[]> => {
     try {
-      const response = await springApi.get('/api/blogs/all');
+      const response = await springApi.get('/blogs/all');
       return response.data || [];
     } catch (error) {
       console.error("[BlogService] Failed to fetch blogs:", error);
@@ -23,7 +23,7 @@ export const BlogService = {
           }
         ]
       };
-      const response = await springApi.post('/api/blogs/create', payload);
+      const response = await springApi.post('/blogs/create', payload);
       return response.data;
     } catch (error: unknown) {
       console.error("[BlogService] Failed to create blog:", error);
@@ -35,7 +35,7 @@ export const BlogService = {
 
   deleteBlog: async (id: number | string) => {
     try {
-      const response = await springApi.delete('/api/blogs/delete', {
+      const response = await springApi.delete('/blogs/delete', {
         data: [id]
       });
       return response.data;

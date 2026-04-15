@@ -46,6 +46,7 @@ export function getOptimizedImageUrl(url: string | undefined | null, width = 600
   
   // 2. Wrap in our Django Thumbnail Proxy
   const API_BASE = import.meta.env.VITE_DJANGO_URL || 'http://localhost:8000';
+  const API_PREFIX = import.meta.env.VITE_DJANGO_API_PREFIX || '/api';
   const encodedUrl = encodeURIComponent(stableUrl);
-  return `${API_BASE}/api/thumbnail/?url=${encodedUrl}&w=${width}&h=${height}&q=72`;
+  return `${API_BASE}${API_PREFIX}/thumbnail/?url=${encodedUrl}&w=${width}&h=${height}&q=72`;
 }

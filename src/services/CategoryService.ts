@@ -10,22 +10,22 @@ export interface Category {
 
 export const CategoryService = {
   getCategories: async () => {
-    const response = await api.get<Category[]>('/api/categories/');
+    const response = await api.get<Category[]>('/categories/');
     return response.data;
   },
   
   addCategory: async (data: FormData) => {
-    const response = await api.post<Category>('/api/categories/', data);
+    const response = await api.post<Category>('/categories/', data);
     return response.data;
   },
   
   updateCategory: async (id: number | string, data: FormData) => {
-    const response = await api.patch<Category>(`/api/categories/${id}/`, data);
+    const response = await api.patch<Category>(`/categories/${id}/`, data);
     return response.data;
   },
   
   deleteCategory: async (id: number | string) => {
-    await api.delete(`/api/categories/${id}/`);
+    await api.delete(`/categories/${id}/`);
   }
 };
 

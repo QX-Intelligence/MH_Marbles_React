@@ -1,11 +1,13 @@
 import axios from 'axios';
 
 const DJANGO_URL = import.meta.env.VITE_DJANGO_URL || 'http://localhost:8000';
+const DJANGO_API_PREFIX = import.meta.env.VITE_DJANGO_API_PREFIX || '/api';
 const SPRING_URL = import.meta.env.VITE_SPRING_URL || 'http://localhost:8080';
+const SPRING_API_PREFIX = import.meta.env.VITE_SPRING_API_PREFIX || '/api';
 
 // Default instance for Django (Inventory, Products, etc.)
 export const api = axios.create({
-  baseURL: DJANGO_URL,
+  baseURL: `${DJANGO_URL}${DJANGO_API_PREFIX}`,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -14,7 +16,7 @@ export const api = axios.create({
 
 // Second instance for Spring Boot (Auth, Journal, etc.)
 export const springApi = axios.create({
-  baseURL: SPRING_URL,
+  baseURL: `${SPRING_URL}${SPRING_API_PREFIX}`,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',

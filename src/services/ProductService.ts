@@ -10,7 +10,7 @@ export interface ProductResponse {
 export const ProductService = {
   getProducts: async (params?: Record<string, string | number>): Promise<ProductResponse> => {
     console.log("[API] Fetching products from Django backend...");
-    const res = await api.get('/api/products/', { params });
+    const res = await api.get('/products/', { params });
     
     // Map Django response if necessary, but assuming Tile matches Django result for now
     return res.data;
@@ -21,12 +21,12 @@ export const ProductService = {
     const productId = data.get('id');
     
     if (productId && !productId.toString().startsWith('temp-')) {
-      const res = await api.patch(`/api/products/${productId}/`, data, {
+      const res = await api.patch(`/products/${productId}/`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       return res.data;
     } else {
-      const res = await api.post('/api/products/', data, {
+      const res = await api.post('/products/', data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       return res.data;
@@ -34,7 +34,7 @@ export const ProductService = {
   },
 
   deleteProduct: async (id: string | number) => {
-    await api.delete(`/api/products/${id}/`);
+    await api.delete(`/products/${id}/`);
   },
 
 

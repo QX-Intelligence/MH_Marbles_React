@@ -3,15 +3,15 @@ import { ContactInquiry } from '@/types/gallery';
 
 export const ContactService = {
   getAll: async (): Promise<ContactInquiry[]> => {
-    const res = await api.get('/api/contacts/');
+    const res = await api.get('/contacts/');
     return res.data;
   },
   submit: async (data: Omit<ContactInquiry, 'id' | 'created_at'>) => {
-    const res = await api.post('/api/contacts/', data);
+    const res = await api.post('/contacts/', data);
     return res.data;
   },
   delete: async (id: string | number) => {
-    await api.delete(`/api/contacts/${id}/`);
+    await api.delete(`/contacts/${id}/`);
   }
 };
 

@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 import { springApi } from '@/lib/api';
+
+const SPRING_URL = import.meta.env.VITE_SPRING_URL || 'http://localhost:8080';
 
 interface UserInfo {
   name: string;
@@ -30,13 +33,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Essential: Refresh the session immediately on load to convert any 
         // valid refresh token into a fresh access token before making info calls.
         try {
-          await springApi.post('/auth/refresh');
+          await axios.post(`${SPRING_URL}/auth/refresh`, {}, { withCredentials: true });
         } catch (e) {
           // If refresh fails on load, it's fine (user might not be logged in)
           console.log("No refresh token found on startup.");
         }
 
-        const res = await springApi.get('/api/spring/owner/info');
+        const res = await springApi.get('/spring/owner/info');
         if (res.data) {
           setUserInfo(res.data);
           setIsLoggedIn(true);
@@ -55,10 +58,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(true);
     try {
       // 1. Send Google credential to backend (Spring Boot) to establish session cookies
-      await springApi.post('/auth/google', { token: credential });
+      await axios.post(`${SPRING_URL}/auth/google`, { token: credential }, { withCredentials: true });
 
       // 2. Fetch user information from the newly established session
-      const res = await springApi.get('/api/spring/owner/info');
+      const res = await springApi.get('/spring/owner/info');
       
       setUserInfo(res.data);
       setIsLoggedIn(true);
@@ -73,7 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     setLoading(true);
     try {
-      await springApi.post('/auth/logout');
+      await axios.post(`${SPRING_URL}/auth/logout`, {}, { withCredentials: true });
     } catch (e) {
       console.error("Logout error (likely already logged out):", e);
     } finally {

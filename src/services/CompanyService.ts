@@ -3,23 +3,23 @@ import { Brand } from '@/types/gallery';
 
 export const CompanyService = {
   getAll: async (): Promise<Brand[]> => {
-    const res = await api.get('/api/companies/');
+    const res = await api.get('/companies/');
     return res.data;
   },
   create: async (data: FormData) => {
-    const res = await api.post('/api/companies/', data, {
+    const res = await api.post('/companies/', data, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
     return res.data;
   },
   update: async (id: string | number, data: FormData) => {
-    const res = await api.patch(`/api/companies/${id}/`, data, {
+    const res = await api.patch(`/companies/${id}/`, data, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
     return res.data;
   },
   delete: async (id: string | number) => {
-    await api.delete(`/api/companies/${id}/`);
+    await api.delete(`/companies/${id}/`);
   }
 };
 
