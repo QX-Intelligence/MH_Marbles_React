@@ -145,3 +145,5 @@ jobs:
             --command-id "$COMMAND_ID" \
             --details \
             --region $AWS_REGION
+
+      ###End of the Pipeline###
