@@ -75,6 +75,21 @@ export const useInfiniteProducts = () => {
   });
 };
 
+// ─── Featured Products Hook ───────────────────────────────────────────────────
+export const useFeaturedProducts = () => {
+  const { data: brands = [] } = useBrands();
+  const { data: categories = [] } = useCategories();
+
+  return useQuery({
+    queryKey: [...QUERY_KEYS.products, 'featured'],
+    queryFn: async () => {
+      const res = await ProductService.getFeatured();
+      return mapProducts(res || [], brands, categories);
+    },
+    enabled: true,
+  });
+};
+
 // ─── Product Mutations ────────────────────────────────────────────────────────
 export const useProductMutations = () => {
   const qc = useQueryClient();

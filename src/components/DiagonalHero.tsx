@@ -49,7 +49,7 @@ export function DiagonalHero() {
   return (
     <section
       ref={heroRef}
-      className="relative h-[400vh] w-full bg-background"
+      className="relative h-[400vh] w-full bg-background overflow-hidden"
     >
       {/* Sticky Container - Pins content while scrollProgress is < 1 */}
       <div className="sticky top-0 h-screen w-full flex items-stretch overflow-hidden">
@@ -81,7 +81,7 @@ export function DiagonalHero() {
                 initial={{ y: '100%' }}
                 animate={{ y: 0 }}
                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
-                className="text-[4rem] sm:text-[5.5rem] md:text-[6.5rem] lg:text-[8.5rem] font-serif font-light text-foreground leading-[0.82] tracking-[-0.03em]"
+                className="text-[18vw] sm:text-[5.5rem] md:text-[6.5rem] lg:text-[8.5rem] font-serif font-light text-foreground leading-[0.82] tracking-[-0.03em]"
               >
                 Stone
               </motion.h1>
@@ -91,7 +91,7 @@ export function DiagonalHero() {
                 initial={{ y: '100%' }}
                 animate={{ y: 0 }}
                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.7 }}
-                className="text-[4rem] sm:text-[5.5rem] md:text-[6.5rem] lg:text-[8.5rem] font-serif font-light leading-[0.82] tracking-[-0.03em]"
+                className="text-[18vw] sm:text-[5.5rem] md:text-[6.5rem] lg:text-[8.5rem] font-serif font-light leading-[0.82] tracking-[-0.03em]"
                 style={{ color: slide.accent, transition: 'color 0.8s ease' }}
               >
                 Refined
@@ -102,7 +102,7 @@ export function DiagonalHero() {
                 initial={{ y: '100%' }}
                 animate={{ y: 0 }}
                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.9 }}
-                className="text-[4rem] sm:text-[5.5rem] md:text-[6.5rem] lg:text-[8.5rem] font-serif font-light italic text-foreground/20 leading-[0.82] tracking-[-0.03em]"
+                className="text-[18vw] sm:text-[5.5rem] md:text-[6.5rem] lg:text-[8.5rem] font-serif font-light italic text-foreground/20 leading-[0.82] tracking-[-0.03em]"
               >
                 Forever.
               </motion.h1>
@@ -127,12 +127,12 @@ export function DiagonalHero() {
           
           {/* Diagonal reveal sweep (Theme-aware Blackout Layer) */}
           <motion.div 
-            className="absolute inset-0 z-30 bg-background" 
+            className="absolute inset-0 z-30 bg-background pointer-events-none" 
             style={{ 
               x: sweepX,
               // We use a CSS variable for the background color in the gradient
               background: 'linear-gradient(105deg, hsl(var(--background)) 0%, hsl(var(--background)) 40%, transparent 65%)',
-              width: "220%",
+              width: "250%",
               left: "-10%"
             }} 
           />

@@ -3,7 +3,7 @@
  */
 import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react';
 import { useGallery } from '@/contexts/GalleryContext';
-import { getOptimizedImageUrl } from '@/lib/utils';
+import { getOptimizedImageUrl, cn } from '@/lib/utils';
 import { Tile } from '@/data/tiles';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -57,7 +57,7 @@ export const ImmersiveFullscreen: React.FC = () => {
   );
 
   return (
-    <div ref={containerRef} className="w-full bg-[#090807] py-24 md:py-48 px-6 md:px-12">
+    <div ref={containerRef} className="w-full bg-background py-24 md:py-48 px-6 md:px-12">
       <div className="max-w-[1700px] mx-auto grid grid-cols-4 md:grid-cols-12 gap-y-24 md:gap-y-48 gap-x-8 md:gap-x-16">
         {tiles.map((tile, i) => {
           // Asymmetric logic: alternating spans
@@ -72,7 +72,7 @@ export const ImmersiveFullscreen: React.FC = () => {
               key={tile.id}
               className={`masonry-item group relative flex flex-col ${colSpan} ${rowSpan} ${alignSelf} w-full`}
             >
-              <a href={`/product/${tile.id}`} className="block overflow-hidden relative border border-white/[0.03]">
+              <a href={`/product/${tile.id}`} className="block overflow-hidden relative border border-border">
                 <div className={`aspect-[4/5] md:aspect-auto ${isTall ? 'h-[600px]' : 'h-[400px]'} w-full overflow-hidden`}>
                    {tile.image_url || tile.image ? (
                     <img
@@ -84,32 +84,32 @@ export const ImmersiveFullscreen: React.FC = () => {
                       className="w-full h-full object-cover transition-transform duration-[2.5s] group-hover:scale-110 ease-out"
                     />
                   ) : (
-                    <div className="w-full h-full bg-[#1a1a18]" />
+                    <div className="w-full h-full bg-foreground/5" />
                   )}
                 </div>
                 
                 {/* Floating Index */}
-                <span className="absolute top-6 left-6 text-[10px] font-black font-mono text-white/20 tracking-tighter">
+                <span className="absolute top-6 left-6 text-[10px] font-black font-mono text-foreground/70 tracking-tighter">
                   {String(i + 1).padStart(3, '0')}
                 </span>
 
                 {/* Corner Accents */}
-                <div className="absolute top-4 right-4 w-6 h-6 border-t border-r border-white/10 group-hover:border-[#C8A96E]/40 transition-colors duration-500" />
+                <div className="absolute top-4 right-4 w-6 h-6 border-t border-r border-border group-hover:border-accent/40 transition-colors duration-500" />
               </a>
 
               <div className="mt-8 flex flex-col gap-2 max-w-sm">
-                <span className="text-[9px] font-black uppercase tracking-[0.5em] text-[#C8A96E]">
+                <span className="text-[9px] font-black uppercase tracking-[0.5em] text-accent">
                   {tile.category_name || 'Specimen'}
                 </span>
                 <h3 className="text-3xl md:text-5xl font-serif font-light tracking-tighter text-foreground leading-[0.85] transition-transform duration-500 group-hover:translate-x-2">
                   {tile.name}
                 </h3>
-                <div className="h-[1px] w-12 bg-white/10 group-hover:w-24 group-hover:bg-[#C8A96E] transition-all duration-700 mt-2" />
+                <div className="h-[1px] w-12 bg-foreground/10 group-hover:w-24 group-hover:bg-accent transition-all duration-700 mt-2" />
                 <div className="flex justify-between items-center mt-4">
-                   <p className="text-[8px] uppercase tracking-widest text-foreground/30 font-black">
+                   <p className="text-[8px] uppercase tracking-widest text-foreground/70 font-black">
                     {tile.finish} · {tile.origin}
                   </p>
-                  <span className="text-[10px] text-[#C8A96E] opacity-0 group-hover:opacity-100 transition-opacity translate-x-4 group-hover:translate-x-0 transition-transform duration-500">
+                  <span className="text-[10px] text-accent opacity-0 group-hover:opacity-100 transition-opacity translate-x-4 group-hover:translate-x-0 transition-transform duration-500">
                     Discover &rarr;
                   </span>
                 </div>
@@ -125,9 +125,26 @@ export const ImmersiveFullscreen: React.FC = () => {
 // ─────────────────────────────────────────────────────────────────────────────
 // VIEW 2: CURATOR'S GALLERY — Symmetrical minimal grid with detail lens
 // ─────────────────────────────────────────────────────────────────────────────
-export const GalleryCard = ({ tile, i }: { tile: Tile, i: number }) => {
+export const GalleryCard = React.memo(({ tile, i }: { tile: Tile, i: number }) => {
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
   const [isHovered, setIsHovered] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const images = useMemo(() => {
+    return tile.image_urls && tile.image_urls.length > 0 ? tile.image_urls : [tile.image_url || tile.image || ''];
+  }, [tile.image_urls, tile.image_url, tile.image]);
+
+  useEffect(() => {
+    let interval: any;
+    if (isHovered && images.length > 1) {
+      interval = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % images.length);
+      }, 1500);
+    } else if (!isHovered) {
+      setCurrentIndex(0);
+    }
+    return () => clearInterval(interval);
+  }, [isHovered, images.length]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -138,18 +155,18 @@ export const GalleryCard = ({ tile, i }: { tile: Tile, i: number }) => {
 
   return (
     <div
-      className="group relative flex flex-col bg-[#0C0A08] border border-white/5 overflow-hidden transition-all duration-700 hover:bg-white/[0.02]"
+      className="group relative flex flex-col bg-background border border-border overflow-hidden transition-all duration-700 hover:bg-foreground/5"
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <a href={`/product/${tile.id}`} 
-         className="block relative aspect-[3/2] overflow-hidden bg-[#141210]"
+         className="block relative aspect-[3/2] overflow-hidden bg-foreground/5"
       >
-        {tile.image_url || tile.image ? (
+        {images[0] ? (
           <>
             <img
-              src={imgUrl(tile, 900, 600)}
+              src={getOptimizedImageUrl(images[currentIndex], 900, 600)}
               alt={tile.name}
               loading={i < 6 ? "eager" : "lazy"}
               fetchPriority={i < 6 ? "high" : "low"}
@@ -158,7 +175,7 @@ export const GalleryCard = ({ tile, i }: { tile: Tile, i: number }) => {
             />
             {/* Magnifying Lens */}
             <div
-              className="absolute pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-2 border-[#C8A96E]/50 rounded-full shadow-[0_0_50px_rgba(200,169,110,0.3)] z-10"
+              className="absolute pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-2 border-accent/50 rounded-full shadow-[0_0_50px_rgba(200,169,110,0.3)] z-10"
               style={{
                 width: '160px',
                 height: '160px',
@@ -169,17 +186,32 @@ export const GalleryCard = ({ tile, i }: { tile: Tile, i: number }) => {
               }}
             >
               <img
-                src={imgUrl(tile, 1800, 1200)}
+                src={getOptimizedImageUrl(images[currentIndex], 1800, 1200)}
                 alt=""
                 className="absolute max-w-none"
                 style={{
                   width: '400%',
                   height: '400%',
-                  left: `${-mousePos.x * 4 + 12.5}%`,
-                  top: `${-mousePos.y * 4 + 12.5}%`,
+                  left: `${-mousePos.x * 4 + 50}%`,
+                  top: `${-mousePos.y * 4 + 50}%`,
+                  transform: 'translate(-12.5%, -12.5%)'
                 }}
               />
             </div>
+            {/* Dots indicator */}
+            {images.length > 1 && (
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1 z-20">
+                    {images.map((_, dotIdx) => (
+                        <div 
+                            key={dotIdx} 
+                            className={cn(
+                                "w-1 h-1 rounded-full transition-all duration-300",
+                                dotIdx === currentIndex ? "bg-accent scale-150" : "bg-white/30"
+                            )} 
+                        />
+                    ))}
+                </div>
+            )}
           </>
         ) : (
           <div className="w-full h-full" style={{ backgroundColor: tile.fill || '#1a1a18' }} />
@@ -189,26 +221,26 @@ export const GalleryCard = ({ tile, i }: { tile: Tile, i: number }) => {
       </a>
 
       <div className="p-8 flex flex-col gap-1 relative">
-        <div className="absolute top-0 left-8 right-8 h-[1px] bg-white/5 group-hover:bg-[#C8A96E]/30 transition-colors duration-500" />
-        <span className="text-[8px] font-black uppercase tracking-[0.6em] text-[#C8A96E]/60 mb-2">
+        <div className="absolute top-0 left-8 right-8 h-[1px] bg-foreground/5 group-hover:bg-accent/30 transition-colors duration-500" />
+        <span className="text-[8px] font-black uppercase tracking-[0.6em] text-accent/80 mb-2">
           {String(i + 1).padStart(2, '0')} — {tile.category_name || 'Specimen'}
         </span>
-        <h3 className="text-2xl font-serif font-light text-foreground tracking-tight group-hover:text-[#C8A96E] transition-colors duration-500">
+        <h3 className="text-2xl font-serif font-light text-foreground tracking-tight group-hover:text-accent transition-colors duration-500">
           {tile.name}
         </h3>
         <div className="flex justify-between items-end mt-6">
           <div className="flex flex-col gap-1">
-            <span className="text-[7px] uppercase tracking-[0.3em] text-foreground/20 font-black">Technical Data</span>
-            <span className="text-[9px] uppercase tracking-widest text-foreground/40 font-bold">{tile.finish} · {tile.size || 'Custom'}</span>
+            <span className="text-[7px] uppercase tracking-[0.3em] text-foreground/60 font-black">Technical Data</span>
+            <span className="text-[9px] uppercase tracking-widest text-foreground/70 font-bold">{tile.finish} · {tile.size || 'Custom'}</span>
           </div>
-          <span className="text-[7px] font-black uppercase tracking-[0.4em] text-foreground/20 group-hover:text-foreground transition-colors">
+          <span className="text-[7px] font-black uppercase tracking-[0.4em] text-foreground/60 group-hover:text-foreground transition-colors">
             Details &rarr;
           </span>
         </div>
       </div>
     </div>
   );
-};
+});
 
 export const ScatteredFreeform: React.FC = () => {
   const tiles = useTiles();
@@ -216,20 +248,20 @@ export const ScatteredFreeform: React.FC = () => {
   if (tiles.length === 0) return null;
 
   return (
-    <div className="w-full bg-[#0C0A08] py-24 md:py-40">
+    <div className="w-full bg-background py-24 md:py-40">
       <div className="max-w-[1600px] mx-auto px-8 md:px-16 mb-24 flex flex-col md:flex-row items-end justify-between gap-8">
         <div className="max-w-2xl">
-          <p className="text-[10px] tracking-[0.6em] uppercase font-black text-[#C8A96E] mb-6">Archive Selection II</p>
+          <p className="text-[10px] tracking-[0.6em] uppercase font-black text-accent mb-6">Archive Selection II</p>
           <h2 className="text-6xl md:text-8xl font-serif font-light tracking-tighter text-foreground leading-[0.85]">
             Symmetry <br />
-            <span className="italic text-foreground/20">& Precision.</span>
+            <span className="italic text-foreground/60">& Precision.</span>
           </h2>
         </div>
         <div className="flex flex-col items-end gap-4 text-right">
-          <p className="text-[9px] tracking-widest uppercase text-foreground/30 font-black">
+          <p className="text-[9px] tracking-widest uppercase text-foreground/70 font-black">
             Manual Curation · {tiles.length} Specimens
           </p>
-          <div className="w-32 h-[1px] bg-white/10" />
+          <div className="w-32 h-[1px] bg-foreground/10" />
         </div>
       </div>
 
@@ -252,7 +284,7 @@ export const FilmStrip: React.FC = () => {
   if (tiles.length === 0) return null;
 
   return (
-    <div className="w-full bg-[#0A0806] min-h-screen relative overflow-hidden">
+    <div className="w-full bg-background min-h-screen relative overflow-hidden">
       {/* Ghost Preview Layer */}
       <div className="absolute inset-0 z-0">
         {tiles.map((tile) => (
@@ -269,30 +301,30 @@ export const FilmStrip: React.FC = () => {
             ) : (
               <div className="w-full h-full" style={{ backgroundColor: tile.fill }} />
             )}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0A0806] via-transparent to-[#0A0806]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
           </div>
         ))}
       </div>
 
       <div className="relative z-10 max-w-[1600px] mx-auto px-8 md:px-16 py-24 md:py-40">
         <div className="mb-24">
-          <p className="text-[10px] tracking-[0.6em] uppercase font-black text-[#C8A96E] mb-6">Archive Selection III</p>
+          <p className="text-[10px] tracking-[0.6em] uppercase font-black text-accent mb-6">Archive Selection III</p>
           <h2 className="text-6xl md:text-8xl font-serif font-light tracking-tighter text-foreground leading-[0.85]">
             Technical <br />
-            <span className="italic text-foreground/20">Inventory.</span>
+            <span className="italic text-foreground/60">Inventory.</span>
           </h2>
         </div>
 
         {/* Index Table */}
-        <div className="w-full border-t border-white/5">
+        <div className="w-full border-t border-border">
           {/* Header */}
-          <div className="hidden md:grid grid-cols-12 py-6 border-b border-white/10 px-4">
-            <div className="col-span-1 text-[9px] font-black uppercase tracking-widest text-[#C8A96E]">Ref</div>
-            <div className="col-span-4 text-[9px] font-black uppercase tracking-widest text-foreground/40">Specimen Name</div>
-            <div className="col-span-2 text-[9px] font-black uppercase tracking-widest text-foreground/40">Origin</div>
-            <div className="col-span-2 text-[9px] font-black uppercase tracking-widest text-foreground/40">Finish</div>
-            <div className="col-span-2 text-[9px] font-black uppercase tracking-widest text-foreground/40">Format</div>
-            <div className="col-span-1 text-right text-[9px] font-black uppercase tracking-widest text-foreground/40">Action</div>
+          <div className="hidden md:grid grid-cols-12 py-6 border-b border-border px-4">
+            <div className="col-span-1 text-[9px] font-black uppercase tracking-widest text-accent">Ref</div>
+            <div className="col-span-4 text-[9px] font-black uppercase tracking-widest text-foreground/70">Specimen Name</div>
+            <div className="col-span-2 text-[9px] font-black uppercase tracking-widest text-foreground/70">Origin</div>
+            <div className="col-span-2 text-[9px] font-black uppercase tracking-widest text-foreground/70">Finish</div>
+            <div className="col-span-2 text-[9px] font-black uppercase tracking-widest text-foreground/70">Format</div>
+            <div className="col-span-1 text-right text-[9px] font-black uppercase tracking-widest text-foreground/70">Action</div>
           </div>
 
           {/* Rows */}
@@ -300,20 +332,20 @@ export const FilmStrip: React.FC = () => {
             <a
               key={tile.id}
               href={`/product/${tile.id}`}
-              className="grid grid-cols-4 md:grid-cols-12 py-8 md:py-10 border-b border-white/5 px-4 items-center group hover:bg-white/[0.02] transition-colors duration-300"
+              className="grid grid-cols-4 md:grid-cols-12 py-8 md:py-10 border-b border-border px-4 items-center group hover:bg-foreground/5 transition-colors duration-300"
               onMouseEnter={() => setHoveredTile(tile)}
               onMouseLeave={() => setHoveredTile(null)}
             >
-              <div className="col-span-1 font-mono text-[10px] text-foreground/20 group-hover:text-[#C8A96E] transition-colors">
+              <div className="col-span-1 font-mono text-[10px] text-foreground/60 group-hover:text-accent transition-colors">
                 {String(i + 1).padStart(3, '0')}
               </div>
               
               <div className="col-span-3 md:col-span-4 flex items-center gap-6">
-                <div className="w-12 h-12 shrink-0 border border-white/10 overflow-hidden hidden md:block">
+                <div className="w-12 h-12 shrink-0 border border-border overflow-hidden hidden md:block">
                   {tile.image_url || tile.image ? (
                     <img src={imgUrl(tile, 100, 100)} alt="" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
                   ) : (
-                    <div className="w-full h-full bg-[#1a1a18]" />
+                    <div className="w-full h-full bg-foreground/5" />
                   )}
                 </div>
                 <h3 className="text-xl md:text-3xl font-serif font-light text-foreground group-hover:translate-x-2 transition-transform duration-500">
@@ -321,20 +353,20 @@ export const FilmStrip: React.FC = () => {
                 </h3>
               </div>
 
-              <div className="hidden md:block col-span-2 text-sm font-sans font-medium text-foreground/40 group-hover:text-foreground transition-colors">
+              <div className="hidden md:block col-span-2 text-sm font-sans font-medium text-foreground/70 group-hover:text-foreground transition-colors">
                 {tile.origin || 'Imported'}
               </div>
 
-              <div className="hidden md:block col-span-2 text-sm font-serif italic text-foreground/40 group-hover:text-[#C8A96E] transition-colors">
+              <div className="hidden md:block col-span-2 text-sm font-serif italic text-foreground/70 group-hover:text-accent transition-colors">
                 {tile.finish || 'Polished'}
               </div>
 
-              <div className="hidden md:block col-span-2 font-mono text-[10px] uppercase tracking-widest text-foreground/20">
+              <div className="hidden md:block col-span-2 font-mono text-[10px] uppercase tracking-widest text-foreground/60">
                 {tile.size || '3200 x 1600'}
               </div>
 
               <div className="col-span-1 text-right">
-                <span className="inline-flex w-10 h-10 items-center justify-center border border-[#C8A96E]/20 rounded-full text-[#C8A96E] opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:scale-110">
+                <span className="inline-flex w-10 h-10 items-center justify-center border border-accent/20 rounded-full text-accent opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:scale-110">
                   &rarr;
                 </span>
               </div>
@@ -385,13 +417,13 @@ const SlabRow = ({ tiles, speed, direction = 1 }: { tiles: Tile[], speed: number
             {tile.image_url || tile.image ? (
               <img src={imgUrl(tile, 800, 1000)} alt={tile.name} className="w-full h-full object-cover transition-transform duration-[4s] group-hover:scale-110" />
             ) : (
-              <div className="w-full h-full bg-[#1a1a18]" />
+              <div className="w-full h-full bg-foreground/5" />
             )}
             <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/10 opacity-60" />
             
             {/* Label Overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-8 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-gradient-to-t from-black/80 to-transparent">
-              <p className="text-[8px] font-black uppercase tracking-[0.4em] text-[#C8A96E] mb-2">{tile.category_name}</p>
+              <p className="text-[8px] font-black uppercase tracking-[0.4em] text-accent mb-2">{tile.category_name}</p>
               <h4 className="text-2xl font-serif font-light text-white leading-none">{tile.name}</h4>
             </div>
           </div>
@@ -415,12 +447,12 @@ export const DramaticSplit: React.FC = () => {
   const row3 = tiles.slice(Math.ceil(tiles.length * 2 / 3));
 
   return (
-    <div className="w-full bg-[#090807] py-24 md:py-40 overflow-hidden">
+    <div className="w-full bg-background py-24 md:py-40 overflow-hidden">
       <div className="max-w-[1600px] mx-auto px-8 md:px-16 mb-16">
-        <p className="text-[10px] tracking-[0.6em] uppercase font-black text-[#C8A96E] mb-6">Archive Selection IV</p>
+        <p className="text-[10px] tracking-[0.6em] uppercase font-black text-accent mb-6">Archive Selection IV</p>
         <h2 className="text-6xl md:text-8xl font-serif font-light tracking-tighter text-foreground leading-[0.85]">
           The Infinite <br />
-          <span className="italic text-foreground/20">Showroom.</span>
+          <span className="italic text-foreground/60">Showroom.</span>
         </h2>
       </div>
 
@@ -431,7 +463,7 @@ export const DramaticSplit: React.FC = () => {
       </div>
 
       <div className="max-w-[1600px] mx-auto px-8 md:px-16 mt-24 text-center">
-        <p className="text-[9px] tracking-[0.4em] uppercase font-black text-foreground/20">
+        <p className="text-[9px] tracking-[0.4em] uppercase font-black text-foreground/60">
           Total Collection Height: {tiles.length * 3} Meters · Interactive Surface
         </p>
       </div>

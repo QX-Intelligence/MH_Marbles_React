@@ -73,8 +73,12 @@ const Atelier = () => {
     return (
         <>
             <SEO 
-                title="The Atelier: Art of Precision" 
-                description="Experience the high-density craft of architectural stone carving. From master selection to diamond-jet precision geometry."
+                title="The Showroom | Art of Precision" 
+                description="Experience the high-density craft of architectural stone carving at MH Marbles. From master selection in the quarries to diamond-jet precision geometry in our atelier."
+                breadcrumbs={[
+                  { name: 'Home', item: '/' },
+                  { name: 'Showroom', item: '/showroom' }
+                ]}
             />
             <PageLayout title="The Atelier." subtitle="The Craft of Precision">
                 

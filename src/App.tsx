@@ -11,6 +11,7 @@ import { GalleryProvider } from "@/contexts/GalleryContext";
 
 import Index from "./pages/Index";
 import Collection from "./pages/Collection";
+import Companies from "./pages/Companies";
 import Showroom from "./pages/Showroom";
 import Heritage from "./pages/Heritage";
 import Blog from "./pages/Journal";
@@ -30,6 +31,7 @@ import ProductManager from "./pages/admin/ProductManager";
 import CategoryManager from "./pages/admin/CategoryManager";
 import BrandManager from "./pages/admin/BrandManager";
 import MediaManager from "./pages/admin/MediaManager";
+import FeaturedManager from "./pages/admin/FeaturedManager";
 import SanitaryManager from "./pages/admin/SanitaryManager";
 import JournalManager from "./pages/admin/JournalManager";
 import MessageManager from "./pages/admin/MessageManager";
@@ -43,61 +45,60 @@ const App = () => {
   console.log("App Rendering - Current Path:", window.location.pathname);
   return (
   <HelmetProvider>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-          <AuthProvider>
-            <GalleryProvider>
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <BrowserRouter>
-                  <ScrollProgress />
-                  <ScrollToTop />
-                  <ScrollToTopButton />
-                  <Routes>
-                    {/* Public Frontend */}
-                    <Route path="/" element={<Index />} />
-                    <Route path="/product/:id" element={<ProductDetail />} />
-                    <Route path="/collection" element={<Collection />} />
-                    <Route path="/heritage" element={<Heritage />} />
-                    <Route path="/showroom" element={<Showroom />} />
-                    <Route path="/process" element={<OurProcess />} />
-                    <Route path="/journal" element={<Blog />} />
-                    <Route path="/sanitary" element={<Sanitary />} />
-                    <Route path="/contact" element={<Contact />} />
-                    <Route path="/test" element={<Test />} />
-                    
-                    {/* Admin Access */}
-                    <Route path="/admin/login" element={<Verification />} />
-                    <Route 
-                      path="/admin" 
-                      element={
-                        <AdminRoute>
-                          <AdminLayout />
-                        </AdminRoute>
-                      }
-                    >
-                      <Route index element={<Navigate to="/admin/products" replace />} />
-                      <Route path="products" element={<ProductManager />} />
-                      <Route path="categories" element={<CategoryManager />} />
-                      <Route path="brands" element={<BrandManager />} />
-                      <Route path="sanitary" element={<SanitaryManager />} />
-                      <Route path="media" element={<MediaManager />} />
-                      <Route path="journal" element={<JournalManager />} />
-                      <Route path="messages" element={<MessageManager />} />
-                      <Route path="settings" element={<SystemConfig />} />
-                    </Route>
-
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </BrowserRouter>
-              </TooltipProvider>
-            </GalleryProvider>
-          </AuthProvider>
-        </GoogleOAuthProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+        <AuthProvider>
+          <GalleryProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <ScrollProgress />
+                <ScrollToTop />
+                <ScrollToTopButton />
+                <Routes>
+                  {/* Public Frontend */}
+                  <Route path="/" element={<Index />} />
+                  <Route path="/product/:id" element={<ProductDetail />} />
+                  <Route path="/collection" element={<Collection />} />
+                  <Route path="/companies" element={<Companies />} />
+                  <Route path="/heritage" element={<Heritage />} />
+                  <Route path="/showroom" element={<Showroom />} />
+                  <Route path="/process" element={<OurProcess />} />
+                  <Route path="/journal" element={<Blog />} />
+                  <Route path="/sanitary" element={<Sanitary />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/test" element={<Test />} />
+                  
+                  {/* Admin Access */}
+                  <Route path="/admin/login" element={<Verification />} />
+                  <Route 
+                    path="/admin" 
+                    element={
+                      <AdminRoute>
+                        <AdminLayout />
+                      </AdminRoute>
+                    }
+                  >
+                    <Route index element={<Navigate to="/admin/products" replace />} />
+                    <Route path="products" element={<ProductManager />} />
+                    <Route path="categories" element={<CategoryManager />} />
+                    <Route path="brands" element={<BrandManager />} />
+                    <Route path="sanitary" element={<SanitaryManager />} />
+                    <Route path="media" element={<MediaManager />} />
+                    <Route path="featured" element={<FeaturedManager />} />
+                    <Route path="journal" element={<JournalManager />} />
+                    <Route path="messages" element={<MessageManager />} />
+                    <Route path="settings" element={<SystemConfig />} />
+                  </Route>
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </TooltipProvider>
+          </GalleryProvider>
+        </AuthProvider>
+      </GoogleOAuthProvider>
+    </ThemeProvider>
   </HelmetProvider>
   );
 };

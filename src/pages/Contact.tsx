@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { PageLayout } from '@/components/PageLayout';
+import SEO from '@/components/SEO';
 import { Contact } from '@/components/Contact';
 import { Button } from '@/components/ui/button';
 import { Loader2, ArrowRight, CheckCircle2 } from 'lucide-react';
@@ -68,10 +69,19 @@ const ContactPage = () => {
     };
 
     return (
-        <PageLayout
-            title="Contact Us."
-            subtitle="Inquiry & Support"
-        >
+        <>
+            <SEO 
+                title="Contact Us | Inquiry & Support" 
+                description="Get in touch with the MH Marbles curation team. Request consultations, quotes, or bespoke stone sourcing for your architectural projects."
+                breadcrumbs={[
+                    { name: 'Home', item: '/' },
+                    { name: 'Contact', item: '/contact' }
+                ]}
+            />
+            <PageLayout
+                title="Contact Us."
+                subtitle="Inquiry & Support"
+            >
             <div className="space-y-32 md:space-y-48 pb-20">
                 {/* Form Section */}
                 <section className="relative w-full max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 md:gap-32">
@@ -197,7 +207,8 @@ const ContactPage = () => {
                 <Contact />
             </div>
         </PageLayout>
-    );
+    </>
+  );
 };
 
 export default ContactPage;

@@ -2,7 +2,7 @@ export interface Tile {
   id: string | number;
   name: string;
   category?: 'marble' | 'granite' | 'vitrified' | 'wooden' | string | number;
-  brand: string; // Map from company in backend
+  brand: string; // Mapped from company name (resolved client-side)
   size: string;  
   fill?: string; // fallback color for rendering
   finish: string;
@@ -17,23 +17,34 @@ export interface Tile {
   textureColor?: string; 
   roughness?: number;
   metalness?: number;
-  image?: string; 
-  image_url?: string; // Correct S3 URL from backend
-  image_key?: string; // S3 storage key
-  company?: number;   // Raw ID from backend
-  category_name?: string;
+  image?: string;       // Static/local image fallback
+  // Backend returns image_urls[] (array of presigned S3 URLs)
+  image_urls?: string[];
+  // Convenience: first URL from image_urls, resolved in mapping layer
+  image_url?: string;
+  image_key?: string;   // S3 storage key (write-only, for reference)
+  image_keys?: string[]; // All S3 keys (backend stores up to 5)
+  is_featured?: boolean; // Backend supports up to 6 featured products
+  company?: number;      // Raw FK ID from backend
+  category_name?: string; // Resolved client-side from category ID
   space?: string; 
+  created_at?: string;
 }
 
 export interface SanitaryItem {
   id: string | number;
   name: string;
   description: string;
-  image: string;
-  price?: string;
+  // Backend returns image_urls[] (array of presigned S3 URLs)
+  image_urls?: string[];
+  // Convenience alias: first URL from image_urls, resolved in mapping layer
   image_url?: string;
+  image?: string;       // fallback / local
+  price?: string;
   image_key?: string;
+  image_keys?: string[];
   category?: number | null;
+  company?: number | null;  // FK to companies.Company
   created_at?: string;
 }
 
@@ -217,6 +228,7 @@ export const initialTiles: Tile[] = [
     metalness: 0.05,
     brand: 'Nightshade',
     size: '600x600 mm',
+    image: 'https://images.unsplash.com/photo-1604543519999-738cb20dce94?auto=format&fit=crop&q=80&w=2000',
     fill: '#4a4a4a',
     finishes: ['Matte', 'Rustic'],
     thickness: '10',
@@ -236,6 +248,7 @@ export const initialTiles: Tile[] = [
     metalness: 0.1,
     brand: 'Beige Luxe',
     size: '800x800 mm',
+    image: 'https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&q=80&w=2000',
     fill: '#d4c4a8',
     finishes: ['Satin', 'Glossy'],
     thickness: '12',
@@ -256,6 +269,7 @@ export const initialTiles: Tile[] = [
     metalness: 0.0,
     brand: 'Natural Wood',
     size: '200x1200 mm',
+    image: 'https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?auto=format&fit=crop&q=80&w=2000',
     fill: '#c4a77d',
     finishes: ['Matte', 'Textured'],
     thickness: '15',
@@ -275,6 +289,7 @@ export const initialTiles: Tile[] = [
     metalness: 0.0,
     brand: 'Deep Walnut',
     size: '200x1200 mm',
+    image: 'https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?auto=format&fit=crop&q=80&w=2000',
     fill: '#5c4033',
     finishes: ['Matte', 'Hand-scraped'],
     thickness: '15',

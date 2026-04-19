@@ -125,7 +125,7 @@ const Verification = () => {
         <img 
           src="/Logo1.png" 
           alt="MH Marbles" 
-          className="w-16 h-16 object-contain logo-visibility group-hover:scale-110 transition-transform duration-700"
+          className="w-24 h-24 object-contain group-hover:scale-110 transition-transform duration-700"
         />
         <div className="mt-2 text-center">
           <span className="text-white font-black text-[9px] tracking-[0.6em] uppercase block opacity-40">Visionary Portal</span>
@@ -148,7 +148,7 @@ const Verification = () => {
             <h2 className="text-3xl md:text-5xl font-serif font-light text-white leading-tight tracking-tighter mb-5">
               {slide.tagline.split(' ').map((word, i) => i === 1 ? <span key={i} className="italic text-accent/60">{word} </span> : word + ' ')}
             </h2>
-            <p className="text-xs text-white/40 font-sans font-medium uppercase tracking-[0.2em] max-w-sm leading-loose">
+            <p className="text-xs text-foreground/40 font-sans font-medium uppercase tracking-[0.2em] max-w-sm leading-loose">
               {slide.description}
             </p>
           </motion.div>
@@ -162,14 +162,14 @@ const Verification = () => {
                 key={idx}
                 onClick={() => goTo(idx)}
                 className={`transition-all duration-700 rounded-full h-[3px] ${
-                  idx === current ? 'w-10 bg-accent' : 'w-3 bg-white/20 hover:bg-white/40'
+                  idx === current ? 'w-10 bg-accent' : 'w-3 bg-foreground/20 hover:bg-foreground/40'
                 }`}
               />
             ))}
           </div>
           <div className="flex items-center gap-3">
-             <button onClick={() => goTo(current - 1)} className="p-2 border border-white/10 text-white/50 hover:bg-white/10 transition-all"><ChevronLeft size={16} /></button>
-             <button onClick={() => goTo(current + 1)} className="p-2 border border-white/10 text-white/50 hover:bg-white/10 transition-all"><ChevronRight size={16} /></button>
+             <button onClick={() => goTo(current - 1)} className="p-2 border border-foreground/10 text-foreground/50 hover:bg-foreground/10 transition-all"><ChevronLeft size={16} /></button>
+             <button onClick={() => goTo(current + 1)} className="p-2 border border-foreground/10 text-foreground/50 hover:bg-foreground/10 transition-all"><ChevronRight size={16} /></button>
           </div>
         </div>
       </div>
@@ -199,9 +199,9 @@ const Verification = () => {
 
             <div className="space-y-10">
               <div className="flex items-center gap-4">
-                <div className="h-px flex-1 bg-white/10" />
-                <span className="text-[9px] font-bold text-white/20 uppercase tracking-[0.3em]">SECURE PORTAL</span>
-                <div className="h-px flex-1 bg-white/10" />
+                <div className="h-px flex-1 bg-foreground/10" />
+                <span className="text-[9px] font-bold text-foreground/20 uppercase tracking-[0.3em]">SECURE PORTAL</span>
+                <div className="h-px flex-1 bg-foreground/10" />
               </div>
 
               <div className="flex justify-center py-4 scale-110">
@@ -234,19 +234,19 @@ const Verification = () => {
               </div>
 
               <div className="flex flex-col gap-4 items-center">
-                <div className="flex items-center gap-3 text-white/30 group">
+                <div className="flex items-center gap-3 text-foreground/30 group">
                    <ShieldCheck className="w-4 h-4 group-hover:text-accent transition-colors" />
                    <span className="text-[9px] font-bold uppercase tracking-widest">End-to-End Encrypted Session</span>
                 </div>
-                <div className="flex items-center gap-3 text-white/30 group">
+                <div className="flex items-center gap-3 text-foreground/30 group">
                    <Globe className="w-4 h-4 group-hover:text-accent transition-colors" />
                    <span className="text-[9px] font-bold uppercase tracking-widest">Google OAuth Verifier Active</span>
                 </div>
               </div>
             </div>
 
-            <div className="mt-16 pt-8 border-t border-white/5">
-              <p className="text-[9px] text-white/20 font-black uppercase tracking-[0.5em]">
+            <div className="mt-16 pt-8 border-t border-foreground/5">
+              <p className="text-[9px] text-foreground/20 font-black uppercase tracking-[0.5em]">
                 MH MARBLE &copy; {new Date().getFullYear()}
               </p>
             </div>

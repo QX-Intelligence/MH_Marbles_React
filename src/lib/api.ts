@@ -3,11 +3,24 @@ import axios from 'axios';
 const DJANGO_URL = import.meta.env.VITE_DJANGO_URL || 'http://localhost:8000';
 const DJANGO_API_PREFIX = import.meta.env.VITE_DJANGO_API_PREFIX || '/api';
 const SPRING_URL = import.meta.env.VITE_SPRING_URL || 'http://localhost:8080';
-const SPRING_API_PREFIX = import.meta.env.VITE_SPRING_API_PREFIX || '/api';
+const SPRING_AUTH_PREFIX = import.meta.env.VITE_SPRING_AUTH_PREFIX || '/auth';
+
+// Helper to build robust base URLs
+const buildBaseURL = (url: string, prefix: string) => {
+  const cleanUrl = url.endsWith('/') ? url.slice(0, -1) : url;
+  const cleanPrefix = prefix.startsWith('/') ? prefix : `/${prefix}`;
+  // If prefix is just "/" or empty, don't double up
+  if (cleanPrefix === '/') return cleanUrl;
+  return `${cleanUrl}${cleanPrefix}`;
+};
+
+// Robust base URL instances
+const DJANGO_BASE_URL = buildBaseURL(DJANGO_URL, DJANGO_API_PREFIX);
+const SPRING_BASE_URL = buildBaseURL(SPRING_URL, ''); // Spring uses granular prefixes per service
 
 // Default instance for Django (Inventory, Products, etc.)
 export const api = axios.create({
-  baseURL: `${DJANGO_URL}${DJANGO_API_PREFIX}`,
+  baseURL: DJANGO_BASE_URL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -16,7 +29,7 @@ export const api = axios.create({
 
 // Second instance for Spring Boot (Auth, Journal, etc.)
 export const springApi = axios.create({
-  baseURL: `${SPRING_URL}${SPRING_API_PREFIX}`,
+  baseURL: SPRING_BASE_URL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -61,7 +74,8 @@ api.interceptors.response.use(
 
       try {
         // Authenticated sessions are managed by Spring Boot
-        await axios.post(`${SPRING_URL}${SPRING_API_PREFIX}/auth/refresh`, {}, { withCredentials: true });
+        const authRefreshUrl = buildBaseURL(SPRING_URL, SPRING_AUTH_PREFIX);
+        await axios.post(`${authRefreshUrl}/refresh`, {}, { withCredentials: true });
         processQueue(null);
         return api(originalRequest);
       } catch (refreshError) {
@@ -95,7 +109,8 @@ springApi.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await axios.post(`${SPRING_URL}${SPRING_API_PREFIX}/auth/refresh`, {}, { withCredentials: true });
+        const authRefreshUrl = buildBaseURL(SPRING_URL, SPRING_AUTH_PREFIX);
+        await axios.post(`${authRefreshUrl}/refresh`, {}, { withCredentials: true });
         processQueue(null);
         return springApi(originalRequest);
       } catch (refreshError) {

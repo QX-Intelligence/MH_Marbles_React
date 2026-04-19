@@ -26,7 +26,7 @@ export function Footer() {
               <img 
                 src="/Logo1.png" 
                 alt="MH Marbles" 
-                className="h-14 md:h-16 w-auto object-contain transition-all duration-700 group-hover:scale-105 logo-visibility"
+                className="h-14 md:h-16 w-auto object-contain transition-all duration-700 group-hover:scale-105"
               />
               <div className="flex flex-col">
                 <span className="text-xl md:text-2xl lg:text-3xl font-serif tracking-[0.4em] text-foreground uppercase leading-tight group-hover:text-accent transition-colors duration-500">
@@ -44,9 +44,9 @@ export function Footer() {
             </p>
 
             <div className="space-y-6 pt-4 text-foreground/80">
-              <a href="tel:+919876543210" className="text-[10px] font-sans font-bold tracking-[0.5em] hover:text-accent transition-all duration-500 block uppercase">
+              <a href="tel:+919866755272" className="text-[10px] font-sans font-bold tracking-[0.5em] hover:text-accent transition-all duration-500 block uppercase">
                 <span className="w-8 h-[1px] bg-accent/30 inline-block mr-4 align-middle" />
-                +91 98765 43210
+                +91 98667 55272 / 79956 69012
               </a>
               <a href="mailto:info@mhmarble.com" className="text-[10px] font-sans font-bold tracking-[0.5em] hover:text-accent transition-all duration-500 block uppercase">
                 <span className="w-8 h-[1px] bg-accent/30 inline-block mr-4 align-middle" />

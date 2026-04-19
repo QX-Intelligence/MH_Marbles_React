@@ -4,6 +4,7 @@ import HeroCarouselService from '@/services/HeroCarouselService';
 import CollectionService from '@/services/CollectionService';
 import ContactService from '@/services/ContactService';
 import BlogService from '@/services/BlogService';
+import ProjectService from '@/services/ProjectService';
 import { QUERY_KEYS } from '@/lib/queryClient';
 
 // ─── Sanitary Items ───────────────────────────────────────────────────────────
@@ -85,19 +86,26 @@ export const useMessageMutations = () => {
   return { addMessage, deleteMessage };
 };
 
-// ─── Blogs ────────────────────────────────────────────────────────────────────
-export const useBlogs = () => useQuery({
+// ─── Journal (Projects) ───────────────────────────────────────────────────────
+export const useJournal = () => useQuery({
   queryKey: QUERY_KEYS.blogs,
-  queryFn: () => BlogService.getAllBlogs(),
+  queryFn: () => ProjectService.getAll(),
   staleTime: 5 * 60 * 1000,
 });
 
-export const useBlogMutations = () => {
+export const useJournalMutations = () => {
   const qc = useQueryClient();
   const invalidate = () => qc.invalidateQueries({ queryKey: QUERY_KEYS.blogs });
 
-  const addJournal = useMutation({ mutationFn: (entry: Parameters<typeof BlogService.createBlog>[0]) => BlogService.createBlog(entry), onSuccess: invalidate });
-  const deleteJournal = useMutation({ mutationFn: (id: string | number) => BlogService.deleteBlog(id), onSuccess: invalidate });
+  const addJournal = useMutation({ 
+    mutationFn: (data: Parameters<typeof ProjectService.upload>[0]) => ProjectService.upload(data), 
+    onSuccess: invalidate 
+  });
+  
+  const deleteJournal = useMutation({ 
+    mutationFn: (id: string | number) => ProjectService.delete(id), 
+    onSuccess: invalidate 
+  });
 
   return { addJournal, deleteJournal };
 };

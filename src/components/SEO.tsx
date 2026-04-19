@@ -7,6 +7,18 @@ interface SEOProps {
   image?: string;
   type?: 'website' | 'article' | 'product';
   canonical?: string;
+  breadcrumbs?: { name: string; item: string }[];
+  articleData?: {
+    publishedTime?: string;
+    author?: string;
+    section?: string;
+  };
+  productData?: {
+    price?: string;
+    currency?: string;
+    availability?: string;
+    sku?: string;
+  };
 }
 
 const SEO: React.FC<SEOProps> = ({ 
@@ -14,53 +26,121 @@ const SEO: React.FC<SEOProps> = ({
   description, 
   image = '/logo.png', 
   type = 'website',
-  canonical 
+  canonical,
+  breadcrumbs,
+  articleData
 }) => {
   const siteName = 'MH MARBLES';
   const fullTitle = title ? `${title} | ${siteName}` : `${siteName} | Visionary Architectural Gallery`;
-  const defaultDescription = 'Curators of the earth\'most exquisite architectural statements for the discerning visionary since 1980.';
+  const defaultDescription = 'Curators of the earth\'s most exquisite architectural statements for the discerning visionary since 1980.';
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+
+  const siteUrl = 'https://mhmarbles.com';
+  const fullImage = image.startsWith('http') ? image : `${siteUrl}${image}`;
+
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": siteName,
+    "url": siteUrl,
+    "logo": `${siteUrl}/Logo1.png`,
+    "description": defaultDescription,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "MH Marble, PLOT No : 5/A, DOMMARA POCHAMPALLY, SARA GUDEM CHOWRASTA MAIN ROAD",
+      "addressLocality": "Hyderabad",
+      "addressRegion": "Telangana",
+      "postalCode": "500043",
+      "addressCountry": "IN"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+91-9866755272",
+      "contactType": "sales",
+      "areaServed": "IN",
+      "availableLanguage": "English"
+    }
+  };
+
+  const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": siteUrl,
+    "name": siteName,
+    "image": fullImage,
+    "address": organizationSchema.address,
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 17.587134,
+      "longitude": 78.411146
+    },
+    "url": siteUrl,
+    "telephone": organizationSchema.contactPoint.telephone,
+    "priceRange": "$$$",
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "opens": "09:00",
+        "closes": "20:00"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Sunday"],
+        "opens": "09:00",
+        "closes": "14:00"
+      }
+    ]
+  };
+
+  const breadcrumbSchema = breadcrumbs ? {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": breadcrumbs.map((crumb, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "name": crumb.name,
+      "item": crumb.item.startsWith('http') ? crumb.item : `${siteUrl}${crumb.item}`
+    }))
+  } : null;
 
   return (
     <Helmet>
       {/* Basic Meta Tags */}
       <title>{fullTitle}</title>
       <meta name="description" content={description || defaultDescription} />
+      <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
       {canonical && <link rel="canonical" href={canonical} />}
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description || defaultDescription} />
-      <meta property="og:image" content={image} />
+      <meta property="og:image" content={fullImage} />
       <meta property="og:url" content={currentUrl} />
       <meta property="og:site_name" content={siteName} />
+      <meta property="og:locale" content="en_US" />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description || defaultDescription} />
-      <meta name="twitter:image" content={image} />
+      <meta name="twitter:image" content={fullImage} />
+      <meta name="twitter:site" content="@mhmarbles" />
 
-      {/* Structured Data (JSON-LD) - Standard Organization Schema */}
-      <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Organization",
-          "name": siteName,
-          "url": "https://mhmarbles.com",
-          "logo": "https://mhmarbles.com/logo.png",
-          "description": defaultDescription,
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "PLOT NO : 5/A, DOMMARA POCHAMPALLY",
-            "addressLocality": "HYDERABAD",
-            "addressRegion": "TELANGANA",
-            "postalCode": "500043",
-            "addressCountry": "IN"
-          }
-        })}
-      </script>
+      {/* Article Specific */}
+      {type === 'article' && articleData && (
+        <>
+          {articleData.publishedTime && <meta property="article:published_time" content={articleData.publishedTime} />}
+          {articleData.author && <meta property="article:author" content={articleData.author} />}
+          {articleData.section && <meta property="article:section" content={articleData.section} />}
+        </>
+      )}
+
+      {/* Structured Data */}
+      <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
+      <script type="application/ld+json">{JSON.stringify(localBusinessSchema)}</script>
+      {breadcrumbSchema && <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>}
     </Helmet>
   );
 };

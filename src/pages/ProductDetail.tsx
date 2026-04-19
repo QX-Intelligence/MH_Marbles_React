@@ -139,6 +139,18 @@ const ProductDetail: React.FC = () => {
       <SEO
         title={`${tile.name} — MH Marbles`}
         description={tile.description || `${tile.name} — a premium ${String(tile.category_name || tile.category || 'stone')} by MH Marbles. ${tile.finish ? `Available in ${tile.finish} finish.` : ''}`}
+        type="product"
+        breadcrumbs={[
+          { name: 'Home', item: '/' },
+          { name: 'Collection', item: '/collection' },
+          { name: tile.name, item: `/product/${tile.id}` }
+        ]}
+        productData={{
+          price: "Inquire",
+          currency: "INR",
+          availability: "InStock",
+          sku: String(tile.id)
+        }}
       />
 
       <div className="min-h-screen bg-background text-foreground">

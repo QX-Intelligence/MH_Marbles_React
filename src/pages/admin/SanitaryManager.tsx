@@ -16,15 +16,16 @@ import {
 import { toast } from 'sonner';
 
 const SanitaryManager = () => {
-  const { sanitary, addSanitary, updateSanitary, deleteSanitary, sanitaryCategories } = useGallery();
+  const { sanitary, addSanitary, updateSanitary, deleteSanitary, sanitaryCategories, brands } = useGallery();
   const [selectedItem, setSelectedItem] = useState<SanitaryItem | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
-    category: ''
+    category: '',
+    company: ''
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -35,8 +36,10 @@ const SanitaryManager = () => {
     data.append('description', formData.description);
     if (formData.price) data.append('price', formData.price);
     if (formData.category) data.append('category', formData.category);
-    if (imageFile) {
-      data.append('image', imageFile);
+    if (formData.company) data.append('company', formData.company);
+    
+    if (imageFiles.length > 0) {
+      imageFiles.forEach(file => data.append('images', file));
     }
 
     try {
@@ -50,8 +53,8 @@ const SanitaryManager = () => {
       
       setIsDialogOpen(false);
       setSelectedItem(null);
-      setImageFile(null);
-      setFormData({ name: '', description: '', price: '', category: '' });
+      setImageFiles([]);
+      setFormData({ name: '', description: '', price: '', category: '', company: '' });
     } catch (error) {
       toast.error('Failed to save equipment');
     }
@@ -63,7 +66,8 @@ const SanitaryManager = () => {
       name: item.name,
       description: item.description,
       price: item.price || '',
-      category: item.category ? String(item.category) : ''
+      category: item.category ? String(item.category) : '',
+      company: item.company ? String(item.company) : ''
     });
     setIsDialogOpen(true);
   };
@@ -89,8 +93,8 @@ const SanitaryManager = () => {
             <Button 
               onClick={() => {
                 setSelectedItem(null);
-                setFormData({ name: '', description: '', price: '', category: '' });
-                setImageFile(null);
+                setFormData({ name: '', description: '', price: '', category: '', company: '' });
+                setImageFiles([]);
               }}
               className="bg-accent hover:bg-foreground text-background rounded-none px-8 py-6 h-auto text-[10px] font-black uppercase tracking-widest transition-all duration-700 shadow-[0_0_15px_rgba(229,142,88,0.2)]"
             >
@@ -98,7 +102,10 @@ const SanitaryManager = () => {
               Source New Equipment
             </Button>
           </DialogTrigger>
-          <DialogContent className="glass-sepia border-foreground/10 text-foreground rounded-none max-w-2xl shadow-[0_0_100px_rgba(0,0,0,0.8)]">
+          <DialogContent 
+            className="glass-sepia border-foreground/10 text-foreground rounded-none max-w-2xl shadow-[0_0_100px_rgba(0,0,0,0.8)] max-h-[95vh] overflow-y-auto p-8 overscroll-contain"
+            onWheel={(e) => e.stopPropagation()}
+          >
             <DialogHeader>
               <DialogTitle className="text-2xl font-serif font-light tracking-tighter lowercase italic">
                 {selectedItem ? 'Update Equipment' : 'Register New Fixture'}
@@ -130,20 +137,52 @@ const SanitaryManager = () => {
               </div>
 
               <div className="space-y-3">
-                <Label className="text-[9px] font-black uppercase tracking-widest text-foreground/40">Equipment Image</Label>
+                <Label className="text-[9px] font-black uppercase tracking-widest text-foreground/40">Equipment Images (Up to 5)</Label>
                 <div className="flex gap-4">
                   <Input 
                     type="file"
+                    multiple
                     accept="image/*"
-                    onChange={e => setImageFile(e.target.files?.[0] || null)}
+                    onChange={e => {
+                      const newFiles = Array.from(e.target.files || []);
+                      setImageFiles(prev => [...prev, ...newFiles].slice(0, 5));
+                    }}
                     className="bg-foreground/5 border-foreground/10 rounded-none h-12 focus:border-accent transition-colors pt-2"
                   />
                   <div className="w-12 h-12 bg-foreground/5 border border-foreground/10 flex items-center justify-center shrink-0">
                     <ImageIcon className="w-4 h-4 text-foreground/20" />
                   </div>
                 </div>
-                {selectedItem?.image && !imageFile && (
-                  <p className="text-[8px] text-foreground/20 italic">Current image: {selectedItem.image.split('/').pop()}</p>
+                
+                {/* Image Selection Preview */}
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {imageFiles.map((file, i) => (
+                    <div key={i} className="relative w-16 h-16 border border-foreground/10 overflow-hidden group">
+                      <img src={URL.createObjectURL(file)} alt="preview" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                         <button 
+                           type="button" 
+                           onClick={() => setImageFiles(prev => prev.filter((_, idx) => idx !== i))}
+                           className="text-white"
+                         >
+                           <Trash2 size={12} />
+                         </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {selectedItem?.image_urls && selectedItem.image_urls.length > 0 && imageFiles.length === 0 && (
+                  <div className="mt-4">
+                    <p className="text-[8px] text-foreground/20 italic mb-2">Current inventory images:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedItem.image_urls.map((url, i) => (
+                        <div key={i} className="w-10 h-10 border border-foreground/5 opacity-50">
+                          <img src={url} alt="" className="w-full h-full object-cover grayscale" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
 
@@ -158,6 +197,22 @@ const SanitaryManager = () => {
                   {sanitaryCategories.map(cat => (
                     <option key={cat.id} value={cat.id} className="bg-background text-foreground">
                       {cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-3">
+                <Label className="text-[9px] font-black uppercase tracking-widest text-foreground/40">Company</Label>
+                <select 
+                  value={formData.company} 
+                  onChange={e => setFormData({...formData, company: e.target.value})}
+                  className="w-full bg-foreground/5 border border-foreground/10 rounded-none h-12 px-4 focus:border-accent transition-colors outline-none text-sm appearance-none"
+                >
+                  <option value="" className="bg-background text-foreground">Select Company (Optional)</option>
+                  {brands.map(brand => (
+                    <option key={brand.id} value={brand.id} className="bg-background text-foreground">
+                      {brand.name}
                     </option>
                   ))}
                 </select>
@@ -209,6 +264,11 @@ const SanitaryManager = () => {
                      {item.category && (
                        <span className="text-[9px] font-black text-accent/60 tracking-widest uppercase">
                          {sanitaryCategories.find(c => c.id === Number(item.category))?.name || `Category ${item.category}`}
+                       </span>
+                     )}
+                     {item.company && (
+                       <span className="text-[9px] font-black text-foreground/40 tracking-widest uppercase ml-2">
+                         {brands.find(b => b.id === Number(item.company))?.name || `Company ${item.company}`}
                        </span>
                      )}
                    </div>

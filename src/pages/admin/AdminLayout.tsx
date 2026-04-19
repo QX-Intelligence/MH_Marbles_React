@@ -14,7 +14,8 @@ import {
   Bell,
   Search,
   Droplets,
-  Building2
+  Building2,
+  Star
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
@@ -29,6 +30,7 @@ const AdminLayout = () => {
   const unreadCount = messages.filter(m => !m.is_read).length;
 
   const navigation = [
+    { name: 'Spotlight', href: '/admin/featured', icon: Star },
     { name: 'Products', href: '/admin/products', icon: Layers },
     { name: 'Categories', href: '/admin/categories', icon: LayoutDashboard },
     { name: 'Companies', href: '/admin/brands', icon: Building2 },
@@ -40,18 +42,17 @@ const AdminLayout = () => {
   ];
 
   return (
-    <div className="dark min-h-screen bg-background text-foreground font-sans selection:bg-accent/30">
-      <div className="flex min-h-screen">
-      {/* Cinematic Sidebar */}
-      <aside className="w-80 border-r border-foreground/5 bg-card flex flex-col sticky top-0 h-screen overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-accent/30 flex">
+      {/* Cinematic Sidebar - Fixed Pattern */}
+      <aside className="fixed left-0 top-0 w-80 border-r border-foreground/5 bg-card flex flex-col h-screen overflow-hidden shrink-0 z-50">
         {/* Brand Identity */}
-        <div className="p-6 border-b border-foreground/5 group bg-gradient-to-b from-white/[0.02] to-transparent">
+        <div className="p-6 border-b border-foreground/5 group bg-gradient-to-b from-foreground/5 to-transparent">
           <div className="flex items-center gap-5">
             <div className="relative">
               <img
                 src="/Logo1.png"
                 alt="MH Marble Logo"
-                className="w-14 h-14 object-contain logo-visibility"
+                className="w-16 h-16 object-contain"
               />
             </div>
             <div className="flex flex-col text-left">
@@ -76,8 +77,8 @@ const AdminLayout = () => {
                 className={cn(
                   "group flex items-center justify-between px-6 py-4 transition-all duration-500 rounded-none relative overflow-hidden",
                   isActive 
-                    ? "text-foreground bg-white/[0.03] border-l-2 border-accent" 
-                    : "text-foreground/40 hover:text-foreground hover:bg-white/[0.01]"
+                    ? "text-foreground bg-foreground/[0.03] border-l-2 border-accent" 
+                    : "text-foreground/40 hover:text-foreground hover:bg-foreground/[0.02]"
                 )}
               >
                 <div className="flex items-center gap-5 z-10">
@@ -104,11 +105,11 @@ const AdminLayout = () => {
                {user?.picture ? (
                  <img src={user.picture} alt="" className="w-12 h-12 rounded-none border border-foreground/10 group-hover:border-accent transition-colors grayscale" />
                ) : (
-                 <div className="w-12 h-12 bg-white/5 text-foreground/40 flex items-center justify-center text-xs font-bold border border-foreground/10 group-hover:border-accent transition-all">
+                 <div className="w-12 h-12 bg-foreground/5 text-foreground/40 flex items-center justify-center text-xs font-bold border border-foreground/10 group-hover:border-accent transition-all">
                    {user?.name?.[0] || 'C'}
                  </div>
                )}
-               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-accent border-2 border-[#080808] flex items-center justify-center">
+               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-accent border-2 border-background flex items-center justify-center">
                  <ShieldCheck className="w-2.5 h-2.5 text-background" />
                </div>
             </div>
@@ -127,19 +128,18 @@ const AdminLayout = () => {
         </div>
       </aside>
 
-      {/* Primary Workspace */}
-      <main className="flex-1 flex flex-col bg-background relative overflow-hidden">
-        {/* Perspective Background - Organic Glow */}
-        <div className="absolute inset-0 bg-gradient-sepia pointer-events-none opacity-40" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(229,142,88,0.08),transparent_70%)] pointer-events-none" />
-        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-accent/10 to-transparent" />
+      {/* Primary Workspace - Natural Scroll Pattern */}
+      <main className="flex-1 ml-80 flex flex-col bg-background relative min-h-screen">
+        {/* Architectural Canvas - Clean & High-Contrast */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(200,169,110,0.05),transparent_70%)] pointer-events-none" />
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-accent/20 to-transparent opacity-50" />
 
         {/* Workspace Utility Bar */}
-        <header className="h-20 border-b border-foreground/5 px-10 flex items-center justify-between bg-background/40 backdrop-blur-md relative z-10">
+        <header className="h-20 border-b border-foreground/5 px-10 flex items-center justify-between bg-card/60 backdrop-blur-xl relative z-10 shadow-[0_1px_5px_rgba(0,0,0,0.02)]">
           <div className="flex items-center gap-8">
-             <div className="flex items-center gap-4 text-foreground/30 group cursor-pointer hover:text-foreground transition-colors duration-500">
+             <div className="flex items-center gap-4 text-foreground/50 group cursor-pointer hover:text-foreground transition-colors duration-500">
                <Search className="w-4 h-4" />
-               <span className="text-[10px] font-black uppercase tracking-[0.3em]">Command Center</span>
+               <span className="text-[10px] font-black uppercase tracking-[0.3em] font-sans">Command Center</span>
              </div>
           </div>
 
@@ -147,25 +147,25 @@ const AdminLayout = () => {
             <div className="flex items-center gap-4">
               <div className="flex flex-col items-end">
                 <span className="text-[9px] font-black text-accent uppercase tracking-[0.3em]">Vault Status</span>
-                <span className="text-[8px] text-white/40 uppercase tracking-[0.2em]">Operational · Secure</span>
+                <span className="text-[8px] text-foreground/60 uppercase tracking-[0.2em] font-bold">Operational · Secure</span>
               </div>
-              <div className="w-2 h-2 bg-accent animate-pulse shadow-[0_0_10px_rgba(229,142,88,0.5)]" />
+              <div className="w-2 h-2 bg-accent shadow-[0_0_15px_rgba(200,169,110,0.8)]" />
             </div>
-            <div className="w-px h-8 bg-white/5" />
+            <div className="w-px h-8 bg-foreground/10" />
             <div 
               onClick={() => navigate('/admin/messages')}
               className="relative cursor-pointer hover:opacity-80 transition-opacity"
             >
-              <Bell className="w-5 h-5 text-white/40" />
+              <Bell className="w-5 h-5 text-foreground/60" />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500" />
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 border border-card" />
               )}
             </div>
           </div>
         </header>
 
-        {/* Dynamic Canvas */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-12 lg:p-20 relative z-10">
+        {/* Main Canvas Area */}
+        <div className="flex-1 p-12 lg:p-20 relative z-10">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -179,7 +179,6 @@ const AdminLayout = () => {
           </AnimatePresence>
         </div>
       </main>
-      </div>
     </div>
   );
 };

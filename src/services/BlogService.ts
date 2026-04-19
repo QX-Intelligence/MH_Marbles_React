@@ -4,7 +4,8 @@ import { JournalEntry } from '@/types/gallery';
 export const BlogService = {
   getAllBlogs: async (): Promise<JournalEntry[]> => {
     try {
-      const response = await springApi.get('/blogs/all');
+      const prefix = import.meta.env.VITE_SPRING_BLOG_PREFIX || '/api/blogs';
+      const response = await springApi.get(`${prefix}/all`);
       return response.data || [];
     } catch (error) {
       console.error("[BlogService] Failed to fetch blogs:", error);
@@ -14,6 +15,7 @@ export const BlogService = {
   
   createBlog: async (blog: Omit<JournalEntry, 'id' | 'instant'>) => {
     try {
+      const prefix = import.meta.env.VITE_SPRING_BLOG_PREFIX || '/api/blogs';
       const payload = {
         bulkRequest: [
           {
@@ -23,7 +25,7 @@ export const BlogService = {
           }
         ]
       };
-      const response = await springApi.post('/blogs/create', payload);
+      const response = await springApi.post(`${prefix}/create`, payload);
       return response.data;
     } catch (error: unknown) {
       console.error("[BlogService] Failed to create blog:", error);
@@ -35,7 +37,8 @@ export const BlogService = {
 
   deleteBlog: async (id: number | string) => {
     try {
-      const response = await springApi.delete('/blogs/delete', {
+      const prefix = import.meta.env.VITE_SPRING_BLOG_PREFIX || '/api/blogs';
+      const response = await springApi.delete(`${prefix}/delete`, {
         data: [id]
       });
       return response.data;

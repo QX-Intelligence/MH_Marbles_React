@@ -28,14 +28,15 @@ const ProductManager = () => {
   const [selectedProduct, setSelectedProduct] = useState<Tile | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | number | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [newCatName, setNewCatName] = useState('');
   const [isSavingCat, setIsSavingCat] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [activeTab, setActiveTab] = useState('all');
+  const [selectedBrand, setSelectedBrand] = useState('all');
   
   // Debounce search input to prevent lag during typing
   useEffect(() => {
@@ -58,7 +59,8 @@ const ProductManager = () => {
     finish: '',
     color: 'White',
     sku: '',
-    image_key: ''
+    image_key: '',
+    is_featured: false,
   });
 
   const filteredTiles = React.useMemo(() => {
@@ -69,10 +71,13 @@ const ProductManager = () => {
       
       // 2. Filter by Active Tab (Category)
       const matchesTab = activeTab === 'all' || String(p.category) === activeTab;
+
+      // 3. Filter by Brand
+      const matchesBrand = selectedBrand === 'all' || String(p.company) === selectedBrand;
       
-      return matchesSearch && matchesTab;
+      return matchesSearch && matchesTab && matchesBrand;
     });
-  }, [backendTiles, debouncedSearch, activeTab]);
+  }, [backendTiles, debouncedSearch, activeTab, selectedBrand]);
 
   const handleEdit = (tile: Tile) => {
     setSelectedProduct(tile);
@@ -84,10 +89,11 @@ const ProductManager = () => {
       finish: tile.finish,
       color: tile.color || 'White',
       sku: tile.sku || '',
-      image_key: tile.image_key || ''
+      image_key: tile.image_key || '',
+      is_featured: tile.is_featured ?? false,
     });
-    setPreviewUrl(tile.image_url || tile.image || null);
-    setImageFile(null);
+    setPreviewUrls(tile.image_urls && tile.image_urls.length > 0 ? tile.image_urls : [tile.image_url || tile.image || '']);
+    setImageFiles([]);
     setIsDialogOpen(true);
   };
 
@@ -106,9 +112,15 @@ const ProductManager = () => {
       data.append('finish', formData.finish);
       data.append('color', formData.color);
       data.append('sku', formData.sku || `SKU-${Date.now()}`);
+      data.append('is_featured', formData.is_featured ? 'true' : 'false');
       
-      if (imageFile) {
-        data.append('image', imageFile);
+      if (selectedProduct) {
+        data.append('id', String(selectedProduct.id));
+      }
+      
+      
+      if (imageFiles.length > 0) {
+        imageFiles.forEach(file => data.append('images', file));
       } else if (formData.image_key) {
         data.append('image_key', formData.image_key);
       }
@@ -130,9 +142,9 @@ const ProductManager = () => {
 
   const resetForm = () => {
     setSelectedProduct(null);
-    setFormData({ name: '', brand_id: '', category_id: '', size: '', finish: '', color: 'White', sku: '', image_key: '' });
-    setImageFile(null);
-    setPreviewUrl(null);
+    setFormData({ name: '', brand_id: '', category_id: '', size: '', finish: '', color: 'White', sku: '', image_key: '', is_featured: false });
+    setImageFiles([]);
+    setPreviewUrls([]);
     setIsAddingCategory(false);
     setNewCatName('');
   };
@@ -204,10 +216,10 @@ const ProductManager = () => {
             <div className="w-8 h-[1px] bg-accent" />
             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-accent">Warehouse Inventory</span>
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-7xl font-serif font-light text-foreground leading-none tracking-tighter">
-            Product <span className="italic text-foreground/30 text-5xl md:text-6xl lg:text-7xl">Manager.</span>
+          <h2 className="text-4xl md:text-5xl lg:text-7xl font-serif font-medium text-foreground leading-none tracking-tighter">
+            Product <span className="italic text-foreground/50 text-5xl md:text-6xl lg:text-7xl">Manager.</span>
           </h2>
-          <p className="mt-10 text-[10px] sm:text-xs text-foreground/40 uppercase tracking-[0.3em] font-sans font-bold leading-loose">
+          <p className="mt-10 text-[10px] sm:text-xs text-foreground/60 uppercase tracking-[0.3em] font-sans font-black leading-loose">
             Managing {backendTiles.length} products across the inventory.
           </p>
         </div>
@@ -223,7 +235,10 @@ const ProductManager = () => {
                 Catalogue New Entry
               </Button>
             </DialogTrigger>
-            <DialogContent className="glass-sepia border-foreground/5 text-foreground max-w-2xl rounded-none p-10 font-sans shadow-[0_0_100px_rgba(0,0,0,0.8)]">
+            <DialogContent 
+              className="glass-sepia border-foreground/5 text-foreground max-w-2xl rounded-none p-8 font-sans shadow-[0_0_100px_rgba(0,0,0,0.8)] max-h-[95vh] overflow-y-auto overscroll-contain"
+              onWheel={(e) => e.stopPropagation()}
+            >
             <DialogHeader className="mb-10 text-center">
                 <DialogTitle className="text-2xl font-serif font-light tracking-tighter lowercase italic">
                   {selectedProduct ? 'Update Masterpiece' : 'Catalogue New Specimen'}
@@ -317,58 +332,79 @@ const ProductManager = () => {
                     placeholder="High Gloss / Matte"
                   />
                 </div>
+                <div className="col-span-2 flex items-center gap-4 pt-2">
+                  <input
+                    id="is_featured_toggle"
+                    type="checkbox"
+                    checked={formData.is_featured}
+                    onChange={e => setFormData({...formData, is_featured: e.target.checked})}
+                    className="w-4 h-4 accent-[#C8A96E] cursor-pointer"
+                  />
+                  <div>
+                    <Label htmlFor="is_featured_toggle" className="text-[9px] font-black uppercase tracking-widest text-foreground/60 cursor-pointer">
+                      Feature on Homepage
+                    </Label>
+                    <p className="text-[8px] text-foreground/30 mt-0.5">Appears in the cinematic Featured section (max 6 products)</p>
+                  </div>
+                </div>
+
                 <div className="col-span-2 space-y-3">
-                  <Label className="text-[9px] font-black uppercase tracking-widest text-foreground/40">Product Image (Selection from Media)</Label>
-                  <div className="flex gap-6">
-                    <div className="flex-1 space-y-4">
-                      <div className="relative group cursor-pointer" onClick={() => document.getElementById('product-image-upload')?.click()}>
-                        <div className="bg-foreground/5 border border-foreground/10 rounded-none h-32 flex flex-col items-center justify-center group-hover:bg-foreground/[0.08] transition-all border-dashed">
-                          <ImageIcon className="w-8 h-8 text-foreground/20 mb-2 group-hover:text-accent transition-colors" />
-                          <span className="text-[9px] font-black uppercase tracking-tighter text-foreground/40">{imageFile ? imageFile.name : 'Choose system file'}</span>
-                        </div>
-                        <input 
-                          id="product-image-upload"
-                          type="file" 
-                          className="hidden" 
-                          accept="image/*"
-                          onChange={e => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              setImageFile(file);
-                              setPreviewUrl(URL.createObjectURL(file));
-                            }
-                          }}
-                        />
+                  <Label className="text-[9px] font-black uppercase tracking-widest text-foreground/40">Product Image (Up to 5 Slabs/Angles)</Label>
+                  <div className="flex flex-col gap-6">
+                    <div className="relative group cursor-pointer" onClick={() => document.getElementById('product-image-upload')?.click()}>
+                      <div className="bg-foreground/5 border border-foreground/10 rounded-none h-32 flex flex-col items-center justify-center group-hover:bg-foreground/[0.08] transition-all border-dashed">
+                        <ImageIcon className="w-8 h-8 text-foreground/20 mb-2 group-hover:text-accent transition-colors" />
+                        <span className="text-[9px] font-black uppercase tracking-tighter text-foreground/40">
+                          {imageFiles.length > 0 ? `${imageFiles.length} files selected` : 'Drag and drop or click to upload'}
+                        </span>
                       </div>
-                      <Input 
-                        value={formData.image_key}
-                        onChange={e => setFormData({...formData, image_key: e.target.value})}
-                        className="bg-foreground/5 border-foreground/10 rounded-none h-10 text-[10px] focus:border-accent transition-colors hidden"
-                        placeholder="Or provide direct key/URL..."
+                      <input 
+                        id="product-image-upload"
+                        type="file" 
+                        multiple
+                        className="hidden" 
+                        accept="image/*"
+                        onChange={e => {
+                          const newFiles = Array.from(e.target.files || []);
+                          setImageFiles(prev => [...prev, ...newFiles].slice(0, 5));
+                        }}
                       />
                     </div>
-                    
-                    <div className="w-32 h-32 bg-foreground/5 border border-foreground/10 shrink-0 overflow-hidden relative group">
-                      {previewUrl ? (
-                        <img 
-                          src={previewUrl} 
-                          alt="Preview" 
-                          className="w-full h-full object-cover transition-all duration-700" 
-                        />
+
+                    {/* Image Selection Preview */}
+                    <div className="grid grid-cols-5 gap-4">
+                      {imageFiles.length > 0 ? (
+                        imageFiles.map((file, i) => (
+                          <div key={i} className="aspect-square bg-foreground/5 border border-foreground/10 overflow-hidden relative group">
+                            <img src={URL.createObjectURL(file)} alt="preview" className="w-full h-full object-cover" />
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setImageFiles(prev => prev.filter((_, idx) => idx !== i));
+                              }}
+                              className="absolute top-1 right-1 bg-red-500 text-white p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <Trash2 size={10} />
+                            </button>
+                          </div>
+                        ))
+                      ) : selectedProduct?.image_urls && selectedProduct.image_urls.length > 0 ? (
+                        selectedProduct.image_urls.map((url, i) => (
+                          <div key={i} className="aspect-square bg-foreground/5 border border-foreground/10 overflow-hidden opacity-60">
+                            <img src={url} alt="" className="w-full h-full object-cover grayscale" />
+                          </div>
+                        ))
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center opacity-10">
-                          <ImageIcon className="w-6 h-6" />
-                        </div>
+                         <div className="col-span-5 py-8 text-center border border-dashed border-foreground/5 opacity-20">
+                           <p className="text-[8px] font-black uppercase tracking-widest">No active specimens selected</p>
+                         </div>
                       )}
-                      <div className="absolute inset-0 bg-background/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span className="text-[8px] font-black uppercase tracking-widest">Preview</span>
-                      </div>
                     </div>
                   </div>
                 </div>
               </div>
               
-              <DialogFooter className="mt-16">
+              <DialogFooter className="mt-10">
                 <Button 
                   onClick={handleSave}
                   className="w-full h-16 bg-accent text-background hover:bg-foreground rounded-none font-black uppercase tracking-[0.4em] text-[10px] transition-all mt-6 shadow-[0_0_30px_rgba(229,142,88,0.2)]"
@@ -382,14 +418,14 @@ const ProductManager = () => {
       </div>
 
       {/* Category Tabs Architecture */}
-      <div className="flex items-center gap-4 scrollbar-hide overflow-x-auto py-4 border-b border-foreground/5 sticky top-20 bg-background/80 backdrop-blur-md z-20">
+      <div className="flex items-center gap-4 scrollbar-hide overflow-x-auto py-4 border-b border-foreground/5 sticky top-0 bg-background/95 backdrop-blur-md z-30">
         <button
           onClick={() => setActiveTab('all')}
           className={cn(
             "px-6 py-3 text-[10px] font-black uppercase tracking-[0.3em] transition-all whitespace-nowrap border-b-2",
             activeTab === 'all' 
               ? "text-accent border-accent" 
-              : "text-foreground/30 border-transparent hover:text-foreground"
+              : "text-foreground/70 border-transparent hover:text-foreground"
           )}
         >
           All Collections
@@ -404,7 +440,7 @@ const ProductManager = () => {
                 "px-6 py-3 text-[10px] font-black uppercase tracking-[0.3em] transition-all whitespace-nowrap border-b-2 flex items-center gap-3",
                 activeTab === String(cat.id)
                   ? "text-accent border-accent" 
-                  : "text-foreground/30 border-transparent hover:text-foreground"
+                  : "text-foreground/50 border-transparent hover:text-foreground"
               )}
             >
               {cat.name}
@@ -421,14 +457,28 @@ const ProductManager = () => {
 
       {/* Utility Bar - Redesigned for Compactness */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-6 py-3 border-b border-foreground/5 bg-foreground/[0.01]">
-        <div className="relative w-full sm:max-w-md group">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-foreground/20 group-focus-within:text-accent transition-colors" />
-          <Input 
-            placeholder="Search the Archive..." 
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="w-full bg-transparent border-none pl-14 h-11 text-[10px] font-bold uppercase tracking-[0.2em] placeholder:text-foreground/10 focus-visible:ring-0"
-          />
+        <div className="flex w-full sm:w-auto flex-1 gap-4 max-w-2xl px-4 sm:px-0">
+          <div className="relative w-full sm:max-w-md group flex-1">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-foreground/40 group-focus-within:text-accent transition-colors" />
+            <Input 
+              placeholder="Search the Archive..." 
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full bg-transparent border-none pl-14 h-11 text-[10px] font-black uppercase tracking-[0.2em] placeholder:text-foreground/20 focus-visible:ring-0"
+            />
+          </div>
+          <div className="w-48 shrink-0 border-l border-foreground/10 pl-4 hidden sm:block">
+            <select
+              value={selectedBrand}
+              onChange={(e) => setSelectedBrand(e.target.value)}
+              className="w-full h-11 bg-transparent border-none text-[10px] font-black tracking-[0.2em] uppercase text-foreground/60 focus:text-accent focus:ring-0 outline-none cursor-pointer"
+            >
+              <option value="all" className="bg-background">All Provenance</option>
+              {brands.map(b => (
+                <option key={b.id} value={b.id} className="bg-background">{b.name}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="flex items-center gap-6 pr-6">
@@ -501,18 +551,18 @@ const ProductManager = () => {
                 <div className="p-8">
                   <div className="flex justify-between items-start mb-4">
                     <span className="text-[9px] font-black text-accent uppercase tracking-widest">{product.brand}</span>
-                    <span className="text-[8px] text-foreground/30 uppercase tracking-[0.2em]">Record #{String(product.id).slice(-4)}</span>
+                    <span className="text-[8px] text-foreground/50 font-bold uppercase tracking-[0.2em]">Record #{String(product.id).slice(-4)}</span>
                   </div>
-                  <h4 className="text-xl font-serif font-light text-foreground mb-6 group-hover:text-accent transition-colors tracking-tight italic">{product.name}</h4>
+                  <h4 className="text-xl font-serif font-medium text-foreground mb-6 group-hover:text-accent transition-colors tracking-tight italic">{product.name}</h4>
                   
                   <div className="grid grid-cols-2 gap-4 border-t border-foreground/5 pt-6 mt-4">
                     <div className="flex flex-col">
-                      <span className="text-[8px] text-foreground/20 uppercase tracking-widest mb-1">Scale</span>
-                      <span className="text-[10px] text-foreground/60 font-bold tracking-wider">{product.size}</span>
+                      <span className="text-[8px] text-foreground/40 font-black uppercase tracking-widest mb-1">Scale</span>
+                      <span className="text-[10px] text-foreground/80 font-black tracking-wider">{product.size}</span>
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-[8px] text-foreground/20 uppercase tracking-widest mb-1">Finish</span>
-                      <span className="text-[10px] text-foreground/60 font-bold tracking-wider">{product.finish}</span>
+                      <span className="text-[8px] text-foreground/40 font-black uppercase tracking-widest mb-1">Finish</span>
+                      <span className="text-[10px] text-foreground/80 font-black tracking-wider">{product.finish}</span>
                     </div>
                   </div>
                 </div>
@@ -527,7 +577,7 @@ const ProductManager = () => {
             className="space-y-4"
           >
             {/* List Header */}
-            <div className="grid grid-cols-12 gap-6 px-10 py-4 opacity-30 text-[9px] font-black uppercase tracking-widest bg-foreground/5">
+            <div className="grid grid-cols-12 gap-6 px-10 py-4 opacity-50 text-[9px] font-black uppercase tracking-widest bg-foreground/10">
               <div className="col-span-1">Preview</div>
               <div className="col-span-4">Nomenclature</div>
               <div className="col-span-2">Provenance</div>

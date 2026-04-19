@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useCallback } from 'react';
+import { api } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { Tile, SanitaryItem, initialTiles } from '@/data/tiles';
 import { useAuth } from '@/contexts/AuthContext';
@@ -8,7 +9,7 @@ import { QUERY_KEYS } from '@/lib/queryClient';
 
 // ─── Query Hooks ─────────────────────────────────────────────────────────────
 import { useBrands, useCategories, useProducts, useProductMutations, useBrandMutations, useCategoryMutations } from '@/hooks/useProducts';
-import { useSanitary, useSanitaryCategories, useSanitaryMutations, useMedia, useMediaMutations, useCollections, useCollectionMutations, useMessages, useMessageMutations, useBlogs, useBlogMutations } from '@/hooks/useDataHooks';
+import { useSanitary, useSanitaryCategories, useSanitaryMutations, useMedia, useMediaMutations, useCollections, useCollectionMutations, useMessages, useMessageMutations, useJournal, useJournalMutations } from '@/hooks/useDataHooks';
 
 // ─── Context Type (identical public interface — zero breaking changes) ─────────
 interface GalleryContextType {
@@ -45,7 +46,7 @@ interface GalleryContextType {
   deleteMedia: (id: string | number) => Promise<void>;
 
   journal: JournalEntry[];
-  addJournal: (entry: Omit<JournalEntry, 'id' | 'instant'>) => Promise<void>;
+  addJournal: (data: { title: string; description: string; ytUrl?: string; images: File[] }) => Promise<void>;
   deleteJournal: (id: string | number) => Promise<void>;
 
   messages: Message[];
@@ -73,7 +74,7 @@ export const GalleryProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const { data: mediaData = [] } = useMedia();
   const { data: collectionsData = [] } = useCollections();
   const { data: messagesData = [] } = useMessages();
-  const { data: blogsData = [] } = useBlogs();
+  const { data: journalData = [] } = useJournal();
 
   // ─── Mutation Hooks ─────────────────────────────────────────────────────────
   const { addProduct, updateProduct, deleteProduct } = useProductMutations();
@@ -83,7 +84,7 @@ export const GalleryProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const { addMedia, updateMedia, deleteMedia } = useMediaMutations();
   const { addCollection, updateCollection, deleteCollection } = useCollectionMutations();
   const { addMessage: addMsg, deleteMessage: delMsg } = useMessageMutations();
-  const { addJournal: addJournalMutation, deleteJournal: delJournal } = useBlogMutations();
+  const { addJournal: addJournalMutation, deleteJournal: delJournal } = useJournalMutations();
 
   // ─── refreshAll: Invalidate everything (admin-level hard refresh) ───────────
   const refreshAll = useCallback(async () => {
@@ -153,9 +154,9 @@ export const GalleryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     updateMedia: async (id, data) => { await updateMedia.mutateAsync({ id, data }); },
     deleteMedia: async (id) => { await deleteMedia.mutateAsync(id); },
 
-    // Journal / Blog
-    journal: (isLoggedIn ? (blogsData ?? []) : []) as JournalEntry[],
-    addJournal: async (entry) => { await addJournalMutation.mutateAsync(entry as Parameters<typeof addJournalMutation.mutateAsync>[0]); },
+    // Journal / Projects
+    journal: journalData as JournalEntry[],
+    addJournal: async (data) => { await addJournalMutation.mutateAsync(data); },
     deleteJournal: async (id) => { await delJournal.mutateAsync(id); },
 
     // Messages
@@ -164,7 +165,10 @@ export const GalleryProvider: React.FC<{ children: React.ReactNode }> = ({ child
       const result = await addMsg.mutateAsync(msg as Parameters<typeof addMsg.mutateAsync>[0]);
       return result as Message;
     },
-    markMessageRead: async (_id) => { /* Placeholder — implement if backend supports PATCH /messages/:id/ */ },
+    markMessageRead: async (id) => {
+      await api.patch(`/contacts/${id}/`, { is_read: true });
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.messages });
+    },
     deleteMessage: async (id) => { await delMsg.mutateAsync(id); },
 
     // Pagination

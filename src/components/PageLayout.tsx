@@ -5,11 +5,11 @@ import gsap from 'gsap';
 
 interface PageLayoutProps {
     children: React.ReactNode;
-    title: string;
-    subtitle: string;
+    title?: string;
+    subtitle?: string;
 }
 
-export function PageLayout({ children, title, subtitle }: PageLayoutProps) {
+export function PageLayout({ children, title = "", subtitle = "" }: PageLayoutProps) {
     const titleRef = useRef<HTMLHeadingElement>(null);
     const subtitleRef = useRef<HTMLDivElement>(null);
 
@@ -70,40 +70,46 @@ export function PageLayout({ children, title, subtitle }: PageLayoutProps) {
     const remainingWords = words.slice(1).join(' ');
 
     return (
-        <div className="min-h-screen bg-background w-full max-w-[100vw] overflow-clip text-foreground transition-colors duration-1000">
+        <div className="min-h-screen bg-background w-full max-w-[100vw] text-foreground transition-colors duration-1000">
             <Header />
             <main className="pt-32 pb-16 md:pt-44 md:pb-24 lg:pt-60 lg:pb-32 w-full">
                 
                 {/* ── Cinematic Page Header ─────────────────────────────────── */}
-                <div className="w-full px-6 md:px-[8%] relative z-10">
-                    <div className="mb-16 md:mb-24 lg:mb-32 max-w-6xl">
-                        
-                        <div ref={subtitleRef} className="flex items-center gap-4 mb-8 overflow-hidden">
-                           <div className="line w-16 h-[1px] bg-[#C8A96E]" />
-                           <span className="sub-text text-[10px] font-sans font-black tracking-[0.8em] uppercase text-[#C8A96E] block">
-                               {subtitle}
-                           </span>
-                        </div>
-                        
-                        <h1 
-                            ref={titleRef} 
-                            className="text-5xl sm:text-7xl md:text-[7.5rem] lg:text-[9rem] font-serif font-light text-foreground leading-[0.85] tracking-tighter"
-                        >
-                            {/* Word wrapper for clipping reveals */}
-                            <div className="overflow-hidden pb-4">
-                               <div className="word-wrap inline-block italic text-foreground/90">
-                                   {firstWord}
-                               </div>
-                            </div>
-                            <div className="overflow-hidden pb-4">
-                               <div className="word-wrap inline-block font-medium text-[#C8A96E]">
-                                   {remainingWords}
-                               </div>
-                            </div>
-                        </h1>
+                {(title || subtitle) && (
+                    <div className="w-full px-6 md:px-[8%] relative z-10">
+                        <div className="mb-16 md:mb-24 lg:mb-32 max-w-6xl">
+                            
+                            {subtitle && (
+                                <div ref={subtitleRef} className="flex items-center gap-4 mb-8 overflow-hidden">
+                                   <div className="line w-16 h-[1px] bg-[#C8A96E]" />
+                                   <span className="sub-text text-[10px] font-sans font-black tracking-[0.8em] uppercase text-[#C8A96E] block">
+                                       {subtitle}
+                                   </span>
+                                </div>
+                            )}
+                            
+                            {title && (
+                                <h1 
+                                    ref={titleRef} 
+                                    className="text-5xl sm:text-7xl md:text-[7.5rem] lg:text-[9rem] font-serif font-light text-foreground leading-[0.85] tracking-tighter"
+                                >
+                                    {/* Word wrapper for clipping reveals */}
+                                    <div className="overflow-hidden pb-4">
+                                       <div className="word-wrap inline-block italic text-foreground/90">
+                                           {title.split(' ')[0]}
+                                       </div>
+                                    </div>
+                                    <div className="overflow-hidden pb-4">
+                                       <div className="word-wrap inline-block font-medium text-[#C8A96E]">
+                                           {title.split(' ').slice(1).join(' ')}
+                                       </div>
+                                    </div>
+                                </h1>
+                            )}
 
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* ── Page Content ────────────────────────────────────────── */}
                 <div className="w-full relative z-20">

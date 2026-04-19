@@ -109,8 +109,12 @@ const OurProcess = () => {
     return (
         <>
             <SEO 
-                title="Our Process: The Architecture of Stone" 
-                description="Discover how MH Vision merges ancient terrestrial materials with bleeding-edge robotic fabrication." 
+                title="Our Process | The Architecture of Stone & Robotic Precision" 
+                description="Discover how MH Marbles merges ancient terrestrial materials with bleeding-edge robotic fabrication. Learn about our Digital Twin scanning and 5-axis robotic milling process." 
+                breadcrumbs={[
+                  { name: 'Home', item: '/' },
+                  { name: 'Our Process', item: '/process' }
+                ]}
             />
             
             <PageLayout title="The Blueprint." subtitle="Algorithmic Craft">

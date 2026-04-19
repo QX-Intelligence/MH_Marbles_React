@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useEffect } from 'react';
-import { useGallery } from '@/contexts/GalleryContext';
+
 import { Tile } from '@/data/tiles';
 import { getOptimizedImageUrl } from '@/lib/utils';
 import gsap from 'gsap';
@@ -21,16 +21,17 @@ const CinematicParallaxCard = React.memo(({ tile, index, total }: { tile: Tile, 
   return (
     <section 
       id={`parallax-section-${index}`}
-      className="absolute inset-0 w-full h-full flex flex-col justify-center bg-[#090807] overflow-hidden text-foreground"
+      className="absolute inset-0 w-full h-full flex flex-col justify-center bg-[#090807] overflow-hidden text-white"
       style={{ 
         zIndex: index + 10,
         // Start hidden (except first one) and the timeline will reveal them
-        clipPath: index === 0 ? 'inset(0% 0% 0% 0%)' : 'inset(100% 0% 0% 0%)' 
+        clipPath: index === 0 ? 'inset(0% 0% 0% 0%)' : 'inset(100% 0% 0% 0%)',
+        willChange: 'clip-path'
       }}
     >
       {/* Target Background Number */}
       <div 
-        className="parallax-bg-text absolute top-[10%] right-[-5%] text-[40vw] font-serif italic text-foreground select-none pointer-events-none leading-none z-0"
+        className="parallax-bg-text absolute top-[10%] right-[-5%] text-[40vw] font-serif italic text-white select-none pointer-events-none leading-none z-0 overflow-hidden"
         style={{ opacity: 0.08 }}
       >
         {numString}
@@ -39,7 +40,7 @@ const CinematicParallaxCard = React.memo(({ tile, index, total }: { tile: Tile, 
       <div className="absolute inset-x-0 top-0 h-full z-0 pointer-events-none overflow-hidden">
         {tile.image_url || tile.image ? (
           <img
-            className="parallax-image w-full h-[120%] object-cover grayscale-[20%] opacity-50 mix-blend-screen"
+            className="parallax-image w-full h-[120%] object-cover grayscale-[20%] opacity-50 mix-blend-screen will-change-transform"
             src={getOptimizedImageUrl(tile.image_url || tile.image, 1600, 2000)}
             alt={tile.name}
             style={{ transform: 'translateY(100px) scale(1.1)' }}
@@ -56,40 +57,40 @@ const CinematicParallaxCard = React.memo(({ tile, index, total }: { tile: Tile, 
               {tile.category_name || String(tile.category || 'Signature')}
             </span>
           </div>
-          <h2 className="text-[14vw] md:text-[10vw] font-serif font-normal leading-[0.85] tracking-tighter text-foreground whitespace-pre-wrap max-w-[80%]">
+          <h2 className="text-[12vw] md:text-[10vw] font-serif font-normal leading-[0.85] tracking-tighter text-white whitespace-pre-wrap max-w-full md:max-w-[80%]">
             {tile.name.split(' ').join('\n')}
           </h2>
         </div>
 
-        <div className="w-full md:w-[400px] xl:w-[500px] shrink-0 border border-foreground/[0.05] bg-foreground/[0.01] backdrop-blur-sm p-8 md:p-10">
-          <div className="grid grid-cols-2 gap-8 mb-8 pb-8 border-b border-foreground/[0.05]">
+        <div className="w-full md:w-[400px] xl:w-[500px] shrink-0 border border-white/10 bg-white/5 backdrop-blur-sm p-8 md:p-10">
+          <div className="grid grid-cols-2 gap-8 mb-8 pb-8 border-b border-white/10">
             <div className="flex flex-col">
-              <span className="text-[8px] font-black tracking-[0.2em] text-foreground/40 uppercase mb-2">Origin Quarry</span>
-              <span className="text-sm md:text-base font-serif italic text-foreground/90">{tile.origin || tile.brand || 'Global Selection'}</span>
+              <span className="text-[8px] font-black tracking-[0.2em] text-white/40 uppercase mb-2">Origin Quarry</span>
+              <span className="text-sm md:text-base font-serif italic text-white/90">{tile.origin || tile.brand || 'Global Selection'}</span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[8px] font-black tracking-[0.2em] text-foreground/40 uppercase mb-2">Finish Types</span>
-              <span className="text-sm md:text-base font-serif italic text-foreground/90">{tile.finish || 'Polished / Honed'}</span>
+              <span className="text-[8px] font-black tracking-[0.2em] text-white/40 uppercase mb-2">Finish Types</span>
+              <span className="text-sm md:text-base font-serif italic text-white/90">{tile.finish || 'Polished / Honed'}</span>
             </div>
           </div>
           <div className="flex flex-col">
-             <span className="text-[8px] font-black tracking-[0.2em] text-foreground/40 uppercase mb-3">Profile</span>
-             <p className="text-sm md:text-base text-foreground/70 leading-relaxed font-sans">
+             <span className="text-[8px] font-black tracking-[0.2em] text-white/40 uppercase mb-3">Profile</span>
+             <p className="text-sm md:text-base text-white/70 leading-relaxed font-sans">
                {tile.description || `A highly refined architectural ${String(tile.category || 'stone').toLowerCase()} characterized by exquisite veining and superior structural density.`}
              </p>
           </div>
         </div>
       </div>
 
-      <div className="relative z-10 w-full max-w-[1800px] mx-auto px-6 md:px-16 mt-auto flex justify-between items-center border-t border-foreground/[0.05] pt-6 pb-4">
+      <div className="relative z-10 w-full max-w-[1800px] mx-auto px-6 md:px-16 mt-auto flex justify-between items-center border-t border-white/10 pt-6 pb-4">
          <div className="flex items-center gap-6">
-           <span className="text-[9px] font-black tracking-[0.2em] text-foreground/40 uppercase">{tile.size ? `${tile.size} Format` : 'Various Formats'}</span>
-           <span className="w-1 h-1 rounded-full bg-foreground/10 hidden md:block" />
-           <span className="text-[9px] font-black tracking-[0.2em] text-foreground/40 uppercase hidden md:block tracking-widest">Premium Selection</span>
+           <span className="text-[9px] font-black tracking-[0.2em] text-white/40 uppercase">{tile.size ? `${tile.size} Format` : 'Various Formats'}</span>
+           <span className="w-1 h-1 rounded-full bg-white/20 hidden md:block" />
+           <span className="text-[9px] font-black tracking-[0.2em] text-white/40 uppercase hidden md:block tracking-widest">Premium Selection</span>
          </div>
          <a 
            href={`/product/${tile.id}`}
-           className="text-[9px] font-black tracking-[0.2em] text-[#C8A96E] hover:text-foreground uppercase transition-colors group flex items-center gap-3"
+           className="text-[9px] font-black tracking-[0.2em] text-[#C8A96E] hover:text-white uppercase transition-colors group flex items-center gap-3"
          >
            View Stone Details
            <span className="transition-transform group-hover:translate-x-2">&rarr;</span>
@@ -100,38 +101,18 @@ const CinematicParallaxCard = React.memo(({ tile, index, total }: { tile: Tile, 
 });
 CinematicParallaxCard.displayName = 'CinematicParallaxCard';
 
+
+
+import { useFeaturedProducts } from '@/hooks/useProducts';
+
 export function FeaturedProducts() {
-  const { backendTiles } = useGallery();
+  const { data: featuredProducts = [] } = useFeaturedProducts();
   const containerRef = useRef<HTMLDivElement>(null);
 
   const featured = useMemo(() => {
-    const tilesWithImages = backendTiles.filter(tile => tile.image_url || tile.image);
-    if (tilesWithImages.length === 0) return [];
-    
-    const categoryMap: Record<string, Tile[]> = {};
-    tilesWithImages.forEach(tile => {
-      const cat = String(tile.category_name || tile.category || 'Stone');
-      if (!categoryMap[cat]) categoryMap[cat] = [];
-      categoryMap[cat].push(tile);
-    });
-
-    const categories = Object.keys(categoryMap);
-    const result: Tile[] = [];
-    let catIndex = 0;
-    while (result.length < 10 && result.length < tilesWithImages.length) {
-      const currentCat = categories[catIndex % categories.length];
-      const tilesInCat = categoryMap[currentCat];
-      const nextTile = tilesInCat.find(t => !result.includes(t));
-      if (nextTile) result.push(nextTile);
-      else {
-        categories.splice(catIndex % categories.length, 1);
-        if (categories.length === 0) break;
-        continue;
-      }
-      catIndex++;
-    }
-    return result;
-  }, [backendTiles]);
+    // Strictly rely on backend API /products/featured/ response
+    return featuredProducts.filter(t => t.image_url || t.image).slice(0, 6);
+  }, [featuredProducts]);
 
   useEffect(() => {
     if (featured.length === 0) return;
@@ -145,6 +126,7 @@ export function FeaturedProducts() {
           scrub: true,
           pin: true,
           anticipatePin: 1,
+          refreshPriority: 5,
         }
       });
 
@@ -190,7 +172,7 @@ export function FeaturedProducts() {
   return (
     <div 
       ref={containerRef} 
-      className="w-full h-screen bg-[#090807] relative overflow-hidden"
+      className="w-full h-screen bg-[#090807] relative overflow-hidden z-[4]"
     >
       {featured.map((tile, i) => (
         <CinematicParallaxCard 

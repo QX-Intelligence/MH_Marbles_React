@@ -86,25 +86,12 @@ export function WhyUs() {
             }
         });
 
-        // Brands reveal
-        if (brands && brands.length > 0) {
-            gsap.from('.why-brand', {
-                y: 30,
-                opacity: 0,
-                stagger: 0.05,
-                duration: 0.8,
-                ease: "power2.out",
-                scrollTrigger: {
-                    trigger: '.why-brand-container',
-                    start: "top 90%"
-                }
-            });
-        }
+
 
     });
 
     return () => ctx.revert();
-  }, [brands]);
+  }, []);
 
   return (
     <section ref={sectionRef} id="why-us" className="relative overflow-hidden bg-background transition-colors duration-500">
@@ -133,7 +120,7 @@ export function WhyUs() {
         <div className="flex flex-col lg:flex-row gap-16 md:gap-24">
 
           {/* Sticky label column */}
-          <div className="why-title lg:w-[38%] lg:sticky lg:top-32 lg:self-start">
+          <div className="why-title lg:w-[38%] lg:sticky lg:top-32 lg:self-start will-change-transform">
             <div className="flex items-center gap-4 mb-8">
               <div className="w-10 h-[1px] bg-[#C8A96E]" />
               <span className="text-[9px] font-sans font-bold tracking-[0.9em] uppercase text-[#C8A96E]">
@@ -167,7 +154,7 @@ export function WhyUs() {
           </div>
 
           {/* Pillars Container */}
-          <div className="why-pillar-container lg:w-[62%] flex flex-col gap-0 border-t border-border pt-10 lg:pt-0 lg:border-t-0">
+          <div className="why-pillar-container lg:w-[62%] flex flex-col gap-0 border-t border-border pt-10 lg:pt-0 lg:border-t-0 will-change-transform">
             {PILLARS.map((p, i) => (
               <div
                 key={i}
@@ -197,26 +184,6 @@ export function WhyUs() {
         </div>
       </div>
 
-      {/* ── PART 3: Brand partners ── */}
-      {brands && brands.length > 0 && (
-        <div className="why-brand-container border-t border-border py-16 md:py-20 px-4 md:px-[8%]">
-          <p className="text-[9px] font-sans font-bold uppercase tracking-[0.7em] text-[#C8A96E]/30 text-center mb-12">
-            Distinguished Partners
-          </p>
-          <div className="flex flex-wrap justify-center gap-x-10 md:gap-x-20 gap-y-8 items-center">
-            {brands.map(brand => (
-              <div key={brand.id} className="why-brand group flex flex-col items-center gap-3 opacity-30 hover:opacity-100 transition-opacity duration-700">
-                {brand.image && (
-                  <img src={brand.image} alt={brand.name} className="h-7 md:h-9 object-contain grayscale" />
-                )}
-                <span className="text-xs md:text-base font-serif font-light tracking-[0.4em] uppercase text-foreground/70 group-hover:text-accent transition-colors duration-500 text-center">
-                  {brand.name}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </section>
   );
 }

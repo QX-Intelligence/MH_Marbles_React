@@ -9,6 +9,16 @@ import { categories as staticCategories, initialTiles } from '@/data/tiles';
 gsap.registerPlugin(ScrollTrigger);
 
 const getCategoryImage = (categoryId: string): string => {
+    // Curated "Flat / 180-Degree" assets for a clean typographic reveal
+    const assets: Record<string, string> = {
+        marble: '/assets/masks/marble.png',
+        granite: '/assets/masks/granite.png',
+        vitrified: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=2600',
+        wooden: 'https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?auto=format&fit=crop&q=80&w=2600'
+    };
+    
+    if (assets[categoryId]) return assets[categoryId];
+
     const tile = initialTiles.find(t => t.category === categoryId);
     return tile?.image || 'https://images.unsplash.com/photo-1618221118493-9cfa1a1c00da?auto=format&fit=crop&q=80&w=2000';
 };
@@ -20,12 +30,17 @@ export function CategoryMasks() {
 
   const dynamicCategories = useMemo(() => {
     return staticCategories.map(cat => {
+      // For the Typographic Masks, we prioritize our curated Hero assets
+      const heroImage = getCategoryImage(cat.id);
+      
+      // We still check for a match to keep the data consistent (IDs/Slugs)
       const match = backendCategories.find(bc => bc.name.toLowerCase() === cat.name.toLowerCase());
+      
       return {
         ...cat,
         id: cat.id,
         name: cat.name,
-        image_url: match?.image_url || getCategoryImage(cat.id)
+        image_url: heroImage // Prioritizing the curated aesthetic
       };
     });
   }, [backendCategories]);
@@ -55,6 +70,7 @@ export function CategoryMasks() {
                 end: `+=${dynamicCategories.length * 250}%`, // 250vh per category for much smoother scroll pacing
                 scrub: 1,
                 pin: true,
+                refreshPriority: 10,
             }
         });
 
@@ -72,11 +88,12 @@ export function CategoryMasks() {
         });
 
         dynamicCategories.forEach((cat, i) => {
+            const currentSection = sectionRefs.current[i];
             const currentMask = textRefs.current[i];
             const currentImg = imageRefs.current[i];
             const nextSection = sectionRefs.current[i + 1];
             
-            // Absolute time marker for this category's phase (1 segment = 1 full transition sequence)
+            // Absolute time marker for this category's phase
             const st = i * 1.0; 
             
             // Phase A: The Current Mask zooms and fades
@@ -86,8 +103,10 @@ export function CategoryMasks() {
             // Pan the current image so it feels alive
             tl.to(currentImg, { scale: 1.15, duration: 0.8, ease: "none" }, st);
 
-            // Phase C: If there is a next category, smoothly fade it in Over the current.
+            // Phase B: Explicitly fade out the current section once the next one is ready
+            // and the mask has zoomed past.
             if (nextSection) {
+                tl.to(currentSection, { opacity: 0, ease: "power1.inOut", duration: 0.3 }, st + 0.8);
                 tl.to(nextSection, { opacity: 1, ease: "power1.inOut", duration: 0.3 }, st + 0.7);
             }
         });
@@ -106,7 +125,7 @@ export function CategoryMasks() {
   }, [dynamicCategories]);
 
   return (
-    <section ref={containerRef} className="relative h-screen w-full overflow-hidden bg-background">
+    <section ref={containerRef} className="relative h-screen w-full overflow-hidden bg-background z-[5]">
         
         {dynamicCategories.map((category, index) => (
             <div 
@@ -122,13 +141,13 @@ export function CategoryMasks() {
                     alt={category.name} 
                     loading="lazy"
                     decoding="async"
-                    className="absolute inset-0 z-0 w-full h-full object-cover filter contrast-[1.1] saturate-[1.2]" 
+                    className="absolute inset-0 z-0 w-full h-full object-cover filter contrast-[1.1] saturate-[1.2] will-change-transform" 
                 />
 
                 {/* The Typographic Mask (Theme-aware Blend) */}
                 <div 
                     ref={el => textRefs.current[index] = el}
-                    className="absolute inset-0 z-10 w-full h-full flex flex-col items-center justify-center pointer-events-none bg-background dark:mix-blend-multiply mix-blend-screen"
+                    className="absolute inset-0 z-10 w-full h-full flex flex-col items-center justify-center pointer-events-none bg-background dark:mix-blend-multiply mix-blend-screen will-change-transform"
                 >
                     <h2 
                         className="font-serif font-black tracking-[-0.04em] leading-none text-center uppercase whitespace-nowrap text-foreground"

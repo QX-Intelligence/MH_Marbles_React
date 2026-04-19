@@ -39,12 +39,18 @@ function stabilizeUrl(url: string): string {
 
 export function getOptimizedImageUrl(url: string | undefined | null, width = 600, height = 750): string {
   if (!url) return '';
+  
+  // 1. Skip proxy for local assets
   if (!url.startsWith('http')) return url;
   
-  // 1. Stabilize the URL first so we are always requesting the same string if possible
+  // 2. Skip proxy for Unsplash (their CDN is already optimized and faster than our proxy)
+  if (url.includes('images.unsplash.com')) return url;
+  
+  // 3. Only use the proxy for S3 URLs (which change frequently and need stabilizing)
+  if (!url.includes('X-Amz-Algorithm')) return url;
+
   const stableUrl = stabilizeUrl(url);
   
-  // 2. Wrap in our Django Thumbnail Proxy
   const API_BASE = import.meta.env.VITE_DJANGO_URL || 'http://localhost:8000';
   const API_PREFIX = import.meta.env.VITE_DJANGO_API_PREFIX || '/api';
   const encodedUrl = encodeURIComponent(stableUrl);

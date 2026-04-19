@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import SEO from '@/components/SEO';
 import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
@@ -10,90 +11,25 @@ import { Contact } from '@/components/Contact';
 import { CTA } from '@/components/CTA';
 import { Footer } from '@/components/Footer';
 import { MobileSticky } from '@/components/MobileSticky';
+import { TileCategories } from '@/components/TileCategories';
 import { useGallery } from '@/contexts/GalleryContext';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ── Reusable Architect's Reserve Section ─────────────────────────────────────
-const ArchitectsReserve = ({
-  id,
-  containerClass,
-  textClass,
-  btnClass,
-  showButton = true,
-}: {
-  id: string;
-  containerClass?: string;
-  textClass?: string;
-  btnClass?: string;
-  showButton?: boolean;
-}) => (
-  <div
-    className={`reserve-container ${id} min-h-[120vh] bg-[#C8A96E] text-[#0C0A08] relative flex flex-col items-center justify-center overflow-hidden selection:bg-background selection:text-[#C8A96E] ${containerClass || ''}`}
-  >
-    <div className="w-full max-w-none relative z-10 flex flex-col items-center py-32">
-      {/* Huge scrubbed text background */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden h-full">
-        <h2
-          className={`reserve-massive-text ${textClass || ''} text-[35vw] font-serif italic font-light leading-none opacity-[0.07] whitespace-nowrap will-change-transform`}
-        >
-          Architect's Reserve &mdash; Architect's Reserve &mdash; Architect's Reserve
-        </h2>
-      </div>
-
-      <div className="text-center px-6 relative z-20">
-        <span className="text-[10px] sm:text-xs font-sans font-black uppercase tracking-[1em] mb-8 block">
-          Private Viewing
-        </span>
-        <h3 className="text-6xl sm:text-7xl md:text-9xl font-serif font-light tracking-tighter leading-[0.8] mb-12">
-          Beyond The <br />
-          <span className="italic">Public Gallery.</span>
-        </h3>
-        <p className="text-sm md:text-lg font-sans max-w-lg mx-auto mb-20 opacity-90 leading-relaxed font-medium">
-          Off-market slabs, hyper-rare chromas, and zero-defect monolithic blocks reserved
-          exclusively for master architects and visionaries.
-        </p>
-
-        {showButton && (
-          <div className="flex flex-col items-center">
-            <a
-              href="/contact"
-              className={`reserve-cta-btn ${btnClass || ''} group inline-flex items-center justify-center w-40 h-40 md:w-56 md:h-56 rounded-full bg-background text-[#C8A96E] text-[10px] font-sans font-black uppercase tracking-[0.4em] transition-all duration-700 hover:scale-105 shadow-2xl relative`}
-            >
-              <div className="absolute inset-0 rounded-full border border-[#C8A96E]/20 scale-110 group-hover:scale-125 transition-transform duration-700" />
-              <span className="text-center px-4 leading-relaxed z-10">
-                Request
-                <br />
-                Access
-                <br />
-                &rarr;
-              </span>
-            </a>
-          </div>
-        )}
-      </div>
-    </div>
-  </div>
-);
-
 // ── Page ──────────────────────────────────────────────────────────────────────
 const Index = () => {
-  const { backendTiles } = useGallery();
+  const { backendTiles, brands } = useGallery();
 
-  // Stable refs for both sections
+  // Stable refs for scroll-animated sections
   const reserve1Container = useRef<HTMLDivElement>(null);
   const reserve1Text = useRef<HTMLHeadingElement>(null);
-  const reserve1Btn = useRef<HTMLAnchorElement>(null);
 
   const reserve2Container = useRef<HTMLDivElement>(null);
   const reserve2Text = useRef<HTMLHeadingElement>(null);
   const reserve2Btn = useRef<HTMLAnchorElement>(null);
 
-  // Single effect — runs on mount AND whenever products finish loading.
-  // The 800ms delay guarantees FeaturedProducts has set up its own pin before
-  // we calculate positions for the sections below it.
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = [];
 
@@ -138,7 +74,6 @@ const Index = () => {
         });
       }
 
-      // Magnetic button for the second (CTA) section
       const btn = reserve2Btn.current;
       if (btn) {
         const onMove = (e: MouseEvent) => {
@@ -159,12 +94,9 @@ const Index = () => {
       ScrollTrigger.refresh();
     };
 
-    // First pass — after initial paint
     timers.push(setTimeout(setup, 400));
-
-    // Second pass — after products have loaded and FeaturedProducts pin is stable
     if (backendTiles.length > 0) {
-      timers.push(setTimeout(setup, 900));
+      timers.push(setTimeout(() => ScrollTrigger.refresh(), 1000));
     }
 
     return () => {
@@ -179,7 +111,8 @@ const Index = () => {
     <>
       <SEO
         title="Architectural Stone Gallery & Signature Stone Curation"
-        description="Curators of the earth's most exquisite architectural statements. Discover our signature collection of Italian marble and exotic stones, crafted for the discerning visionary since 1980."
+        description="Curators of the earth's most exquisite architectural statements. Discover our signature collection of Italian marble and exotic stones."
+        breadcrumbs={[{ name: 'Home', item: '/' }]}
       />
 
       <div className="min-h-screen bg-background">
@@ -188,77 +121,83 @@ const Index = () => {
           <Hero />
           <CategoryMasks />
           <FeaturedProducts />
+          <TileCategories />
 
-          {/* ── First Reserve Strip (no button — pure marquee teaser) ── */}
-          <div ref={reserve1Container} className="reserve-section-1 min-h-[120vh] bg-[#C8A96E] text-[#0C0A08] relative flex flex-col items-center justify-center overflow-hidden selection:bg-background selection:text-[#C8A96E]">
-            <div className="w-full max-w-none relative z-10 flex flex-col items-center py-32">
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden h-full">
-                <h2
-                  ref={reserve1Text}
-                  className="text-[35vw] font-serif italic font-light leading-none opacity-[0.07] whitespace-nowrap will-change-transform"
+          {/* ── Our Brand Partners Section ── */}
+          <section className="py-24 md:py-32 bg-[#f5f3ef] border-t border-[#e0dbd3]">
+            <div className="max-w-[1800px] mx-auto px-6 md:px-[6%]">
+
+              {/* Section Header */}
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+                <div>
+                  <span className="text-[11px] font-black uppercase tracking-[0.5em] text-[#8B7340] block mb-4">Distinguished Partners</span>
+                  <h2 className="text-4xl md:text-5xl font-serif font-light tracking-tighter leading-none text-[#1a1a1a]">
+                    Our <span className="italic text-[#888]">Companies.</span>
+                  </h2>
+                </div>
+                <a
+                  href="/companies"
+                  className="text-[11px] font-black uppercase tracking-[0.3em] text-[#333] hover:text-[#C8A96E] transition-colors duration-500 flex items-center gap-3 shrink-0 border border-[#ccc] hover:border-[#C8A96E] px-6 py-3"
                 >
-                  Architect's Reserve &mdash; Architect's Reserve &mdash; Architect's Reserve
-                </h2>
+                  View All →
+                </a>
               </div>
-              <div className="text-center px-6 relative z-20">
-                <span className="text-[10px] sm:text-xs font-sans font-black uppercase tracking-[1em] mb-8 block">
-                  Private Viewing
-                </span>
-                <h3 className="text-6xl sm:text-7xl md:text-9xl font-serif font-light tracking-tighter leading-[0.8] mb-12">
-                  Beyond The <br />
-                  <span className="italic">Public Gallery.</span>
-                </h3>
-                <p className="text-sm md:text-lg font-sans max-w-lg mx-auto mb-4 opacity-90 leading-relaxed font-medium">
-                  Off-market slabs, hyper-rare chromas, and zero-defect monolithic blocks reserved
-                  exclusively for master architects and visionaries.
-                </p>
+
+              {/* Brands Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 border border-[#ddd]">
+                {brands.map((brand, index) => (
+                  <motion.a
+                    key={brand.id}
+                    href={`/collection?brand=${encodeURIComponent(brand.name)}`}
+                    initial={{ opacity: 0, y: 12 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.06, duration: 0.5 }}
+                    viewport={{ once: true }}
+                    className="group border border-[#e5e1da] flex flex-col items-center justify-center gap-4 p-8 min-h-[160px] bg-white hover:bg-[#faf8f5] hover:border-[#C8A96E]/40 transition-all duration-400 select-none outline-none"
+                  >
+                    {brand.image_url || brand.logo ? (
+                      <img
+                        src={brand.image_url || brand.logo}
+                        alt={brand.name}
+                        className="h-12 w-auto object-contain opacity-100 group-hover:scale-105 transition-all duration-500"
+                      />
+                    ) : (
+                      <span className="text-4xl font-serif italic text-[#444] group-hover:text-[#C8A96E] transition-colors duration-500">
+                        {brand.name.charAt(0)}
+                      </span>
+                    )}
+                    <span className="text-[12px] font-black uppercase tracking-[0.25em] text-[#1a1a1a] group-hover:text-[#C8A96E] transition-colors duration-500 text-center">
+                      {brand.name}
+                    </span>
+                  </motion.a>
+                ))}
+
+                {brands.length === 0 && (
+                  <div className="col-span-full py-20 text-center">
+                    <span className="text-[11px] font-black uppercase tracking-[0.4em] text-[#999]">Loading partners...</span>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
+          </section>
 
           <WhyUs />
           <Reviews />
 
-          {/* ── Second Reserve Strip (full CTA) ── */}
-          <div ref={reserve2Container} className="reserve-section-2 min-h-[120vh] bg-[#C8A96E] text-[#0C0A08] relative flex flex-col items-center justify-center overflow-hidden selection:bg-background selection:text-[#C8A96E]">
-            <div className="w-full max-w-none relative z-10 flex flex-col items-center py-32">
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden h-full">
-                <h2
-                  ref={reserve2Text}
-                  className="text-[35vw] font-serif italic font-light leading-none opacity-[0.07] whitespace-nowrap will-change-transform"
-                >
-                  Architect's Reserve &mdash; Architect's Reserve &mdash; Architect's Reserve
-                </h2>
-              </div>
-              <div className="text-center px-6 relative z-20">
-                <span className="text-[10px] sm:text-xs font-sans font-black uppercase tracking-[1em] mb-8 block">
-                  Private Viewing
-                </span>
-                <h3 className="text-6xl sm:text-7xl md:text-9xl font-serif font-light tracking-tighter leading-[0.8] mb-12">
-                  Beyond The <br />
-                  <span className="italic">Public Gallery.</span>
-                </h3>
-                <p className="text-sm md:text-lg font-sans max-w-lg mx-auto mb-20 opacity-90 leading-relaxed font-medium">
-                  Off-market slabs, hyper-rare chromas, and zero-defect monolithic blocks reserved
-                  exclusively for master architects and visionaries.
-                </p>
-                <div className="flex flex-col items-center">
-                  <a
-                    ref={reserve2Btn}
-                    href="/contact"
-                    className="group inline-flex items-center justify-center w-40 h-40 md:w-56 md:h-56 rounded-full bg-background text-[#C8A96E] text-[10px] font-sans font-black uppercase tracking-[0.4em] transition-all duration-700 hover:scale-105 shadow-2xl relative"
-                  >
+          <div ref={reserve2Container} className="reserve-section-2 min-h-[120vh] bg-[#C8A96E] text-[#0C0A08] relative flex flex-col items-center justify-center overflow-hidden will-change-transform">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none h-full">
+              <h2 ref={reserve2Text} className="text-[35vw] font-serif italic opacity-[0.07] whitespace-nowrap">
+                Architect's Reserve &mdash; Architect's Reserve &mdash; Architect's Reserve
+              </h2>
+            </div>
+            <div className="text-center px-6 relative z-20">
+               <h3 className="text-6xl sm:text-7xl md:text-9xl font-serif font-light tracking-tighter leading-[0.8] mb-12">Request <br /><span className="italic">Excellence.</span></h3>
+               <div className="flex flex-col items-center">
+                  <a ref={reserve2Btn} href="/contact" className="group inline-flex items-center justify-center w-40 h-40 md:w-56 md:h-56 rounded-full bg-background text-[#C8A96E] text-[10px] font-black uppercase tracking-[0.4em] transition-all duration-700 hover:scale-105 shadow-2xl relative">
                     <div className="absolute inset-0 rounded-full border border-[#C8A96E]/20 scale-110 group-hover:scale-125 transition-transform duration-700" />
-                    <span className="text-center px-4 leading-relaxed z-10">
-                      Request
-                      <br />
-                      Access
-                      <br />
-                      &rarr;
-                    </span>
+                    <span className="leading-relaxed z-10">Request <br/> Access <br/> &rarr;</span>
                   </a>
-                </div>
-              </div>
+               </div>
             </div>
           </div>
 

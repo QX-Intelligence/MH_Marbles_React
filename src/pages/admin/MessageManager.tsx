@@ -32,8 +32,8 @@ const MessageManager = () => {
             className={cn(
               "group p-10 border transition-all duration-700",
               message.is_read 
-                ? "bg-[#0a0a0a] border-foreground/5 opacity-60" 
-                : "bg-foreground/[0.02] border-accent/20 border-l-4 border-l-accent"
+                ? "bg-foreground/[0.05] border-foreground/5 opacity-60" 
+                : "bg-background border-accent/20 border-l-4 border-l-accent shadow-md"
             )}
           >
             <div className="flex flex-col lg:flex-row justify-between gap-10">

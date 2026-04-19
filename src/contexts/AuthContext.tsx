@@ -2,8 +2,6 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { springApi } from '@/lib/api';
 
-const SPRING_URL = import.meta.env.VITE_SPRING_URL || 'http://localhost:8080';
-const SPRING_API_PREFIX = import.meta.env.VITE_SPRING_API_PREFIX || '/api';
 
 interface UserInfo {
   name: string;
@@ -31,16 +29,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const checkSession = async () => {
       try {
-        // Essential: Refresh the session immediately on load to convert any 
-        // valid refresh token into a fresh access token before making info calls.
         try {
-          await axios.post(`${SPRING_URL}${SPRING_API_PREFIX}/auth/refresh`, {}, { withCredentials: true });
+          // Essential: Refresh the session immediately on load to convert any 
+          // valid refresh token into a fresh access token before making info calls.
+          const authUrl = import.meta.env.VITE_SPRING_AUTH_PREFIX || '/auth';
+          await springApi.post(`${authUrl}/refresh`, {});
         } catch (e) {
           // If refresh fails on load, it's fine (user might not be logged in)
           console.log("No refresh token found on startup.");
         }
 
-        const res = await springApi.get('/owner/info');
+        const adminUrl = import.meta.env.VITE_SPRING_ADMIN_PREFIX || '/api/spring';
+        const res = await springApi.get(`${adminUrl}/owner/info`);
         if (res.data) {
           setUserInfo(res.data);
           setIsLoggedIn(true);
@@ -60,8 +60,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
 
       // 1. Send Google credential to backend (Spring Boot) to establish session cookies
-      await axios.post(`${SPRING_URL}${SPRING_API_PREFIX}/auth/google`, { token: credential }, { withCredentials: true });
-      const res = await springApi.get('/spring/owner/info');
+      const authUrl = import.meta.env.VITE_SPRING_AUTH_PREFIX || '/auth';
+      await springApi.post(`${authUrl}/google`, { token: credential });
+      
+      const adminUrl = import.meta.env.VITE_SPRING_ADMIN_PREFIX || '/api/spring';
+      const res = await springApi.get(`${adminUrl}/owner/info`);
       
       setUserInfo(res.data);
       setIsLoggedIn(true);
@@ -76,7 +79,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     setLoading(true);
     try {
-      await axios.post(`${SPRING_URL}${SPRING_API_PREFIX}/auth/logout`, {}, { withCredentials: true });
+      const authUrl = import.meta.env.VITE_SPRING_AUTH_PREFIX || '/auth';
+      await springApi.post(`${authUrl}/logout`, {});
     } catch (e) {
       console.error("Logout error (likely already logged out):", e);
     } finally {
