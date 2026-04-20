@@ -137,8 +137,9 @@ const ProductDetail: React.FC = () => {
   return (
     <>
       <SEO
-        title={`${tile.name} — MH Marbles`}
-        description={tile.description || `${tile.name} — a premium ${String(tile.category_name || tile.category || 'stone')} by MH Marbles. ${tile.finish ? `Available in ${tile.finish} finish.` : ''}`}
+        title={`${tile.name} — MH MARBLE`}
+        description={tile.description || `${tile.name} — a premium ${String(tile.category_name || tile.category || 'stone')} by MH MARBLE. ${tile.finish ? `Available in ${tile.finish} finish.` : ''}`}
+
         type="product"
         breadcrumbs={[
           { name: 'Home', item: '/' },

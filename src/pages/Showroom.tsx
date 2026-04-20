@@ -74,7 +74,8 @@ const Atelier = () => {
         <>
             <SEO 
                 title="The Showroom | Art of Precision" 
-                description="Experience the high-density craft of architectural stone carving at MH Marbles. From master selection in the quarries to diamond-jet precision geometry in our atelier."
+                description="Experience the high-density craft of architectural stone carving at MH MARBLE. From master selection in the quarries to diamond-jet precision geometry in our atelier."
+
                 breadcrumbs={[
                   { name: 'Home', item: '/' },
                   { name: 'Showroom', item: '/showroom' }

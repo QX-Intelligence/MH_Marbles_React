@@ -31,9 +31,10 @@ export function Footer() {
             <Link to="/" className="flex items-center gap-6 group">
               <img 
                 src="/Logo1.png" 
-                alt="MH Marbles" 
+                alt="MH MARBLE" 
                 className="h-14 md:h-16 w-auto object-contain transition-all duration-700 group-hover:scale-105"
               />
+
               <div className="flex flex-col">
                 <span className="text-xl md:text-2xl lg:text-3xl font-serif tracking-[0.4em] text-foreground uppercase leading-tight group-hover:text-accent transition-colors duration-500">
                   MH MARBLE
@@ -42,6 +43,7 @@ export function Footer() {
                 <span className="text-[10px] font-sans font-black tracking-[0.8em] uppercase text-accent mt-1 ml-0.5">
                   Quality Tiles For Stylish Living
                 </span>
+
               </div>
             </Link>
 

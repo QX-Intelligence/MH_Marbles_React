@@ -230,7 +230,8 @@ const JournalPage: React.FC = () => {
     return (
         <>
             <SEO 
-                title="Journal — MH Marbles | Stones Through Time"
+                title="Journal — MH MARBLE | Stones Through Time"
+
                 description="Explore our architectural journal, documenting the transformation of raw stone into timeless spaces. A narrative of craftsmanship and modern vision."
                 breadcrumbs={[
                     { name: 'Home', item: '/' },

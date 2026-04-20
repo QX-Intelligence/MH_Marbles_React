@@ -105,7 +105,8 @@ const Sanitary = () => {
         <>
             <SEO 
                 title="Bath & Wellness | Luxury Sanitary Ware" 
-                description="Explore our curated collection of world-class sanitary fixtures at MH Marbles. Transform your private sanctuaries into masterpieces of design and engineering with our fluid sculpture fixtures."
+                description="Explore our curated collection of world-class sanitary fixtures at MH MARBLE. Transform your private sanctuaries into masterpieces of design and engineering with our fluid sculpture fixtures."
+
                 breadcrumbs={[
                   { name: 'Home', item: '/' },
                   { name: 'Sanitary', item: '/sanitary' }
