@@ -3,4 +3,5 @@ Allow: /
 Disallow: /admin/
 Disallow: /api/
 
-Sitemap: https://mhmarbles.com/sitemap.xml
+Sitemap: https://www.mhmarble.com/sitemap.xml
+

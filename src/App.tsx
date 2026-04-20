@@ -45,7 +45,8 @@ const App = () => {
   console.log("App Rendering - Current Path:", window.location.pathname);
   return (
   <HelmetProvider>
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+
       <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
         <AuthProvider>
           <GalleryProvider>

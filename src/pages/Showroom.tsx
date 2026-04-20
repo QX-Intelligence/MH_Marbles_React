@@ -100,7 +100,7 @@ const Atelier = () => {
                                 <span className="italic text-foreground/50">Selection.</span>
                             </h2>
                             <p className="text-xl md:text-2xl font-sans font-light text-foreground/60 max-w-xl leading-relaxed">
-                                Our curators journey to the earth's deepest veins. Only 1 in 1,000 slabs meets the structural integrity required for our signature collection.
+                                Our curators journey to the earth's deepest veins. Only 1 in 1,000 Tile meets the structural integrity required for our signature collection.
                                 <br/><br/>
                                 <span className="uppercase tracking-[0.3em] text-[10px] text-[#C8A96E] font-bold">Scroll to enter the Atelier &rarr;</span>
                             </p>

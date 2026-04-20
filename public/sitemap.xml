@@ -1,51 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://mhmarbles.com/</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://www.mhmarble.com/</loc>
+    <lastmod>2026-04-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://mhmarbles.com/collection</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://www.mhmarble.com/collection</loc>
+    <lastmod>2026-04-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mhmarbles.com/heritage</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://www.mhmarble.com/heritage</loc>
+    <lastmod>2026-04-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mhmarbles.com/showroom</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://www.mhmarble.com/showroom</loc>
+    <lastmod>2026-04-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mhmarbles.com/process</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://www.mhmarble.com/process</loc>
+    <lastmod>2026-04-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mhmarbles.com/journal</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://www.mhmarble.com/journal</loc>
+    <lastmod>2026-04-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mhmarbles.com/sanitary</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://www.mhmarble.com/sanitary</loc>
+    <lastmod>2026-04-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mhmarbles.com/contact</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://www.mhmarble.com/contact</loc>
+    <lastmod>2026-04-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
+
 </urlset>

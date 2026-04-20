@@ -299,7 +299,8 @@ export const initialTiles: Tile[] = [
 ];
 
 export const categories = [
-  { id: 'marble', name: 'Marble', icon: '💎' },
+  { id: 'marble', name: 'Tiles', icon: '💎' },
+
   { id: 'granite', name: 'Granite', icon: '🪨' },
   { id: 'vitrified', name: 'Vitrified Tiles', icon: '✨' },
   { id: 'wooden', name: 'Wooden Finish', icon: '🌳' },

@@ -14,14 +14,15 @@ const PILLARS = [
   },
   {
     num: '02',
-    title: '45 Years of Craft',
-    body: 'Four decades of mastering the art of stone curation, building lasting relationships with the world\'s finest quarry masters.',
+    title: '21 Years of Craft',
+    body: 'Over two decades of mastering the art of stone curation, building lasting relationships with the world\'s finest quarry masters.',
+
     icon: '◇',
   },
   {
     num: '03',
-    title: 'Singular Slabs',
-    body: 'No two slabs are alike. We celebrate each stone\'s unique veining, its billion-year biography etched in mineral.',
+    title: 'Singular Tile',
+    body: 'No two Tile are alike. We celebrate each stone\'s unique veining, its billion-year biography etched in mineral.',
     icon: '⬡',
   },
   {
@@ -33,10 +34,10 @@ const PILLARS = [
 ];
 
 const STATS = [
-  { value: '45+', label: 'Years of Legacy' },
-  { value: '500+', label: 'Unique Textures' },
+  { value: '21+', label: 'Years of Legacy' },
+  { value: '1000+', label: 'Unique Textures' },
   { value: '2,000+', label: 'Projects Realized' },
-  { value: '12', label: 'Countries Sourced' },
+  { value: '4', label: 'States Sourced' },
 ];
 
 export function WhyUs() {
@@ -131,25 +132,27 @@ export function WhyUs() {
             <h2 className="font-serif font-light text-foreground text-5xl md:text-7xl leading-[0.88] tracking-[-0.02em] mb-8">
               Why the<br />
               <span className="italic text-foreground/30">World Chooses</span><br />
-              MH Marble.
+              MH MARBLE.
             </h2>
 
             <p className="text-foreground/40 font-sans font-light text-base md:text-lg leading-relaxed max-w-sm">
-              For nearly half a century, we have curated a sanctuary of the earth's most exquisite stones — not merely surfaces, but enduring statements.
+              For more than two decades, we have curated a sanctuary of the earth's most exquisite stones — not merely surfaces, but enduring statements.
+
             </p>
 
             <div className="relative mt-12 w-full max-w-xs aspect-[4/5] overflow-hidden hidden lg:block border border-border">
               <img
-                src="https://images.unsplash.com/photo-1618221118493-9cfa1a1c00da?auto=format&fit=crop&q=80&w=800"
-                alt="Marble detail"
+                src="/assets/Aboutus/1st-image.png"
+                alt="Brand Heritage"
                 className="w-full h-full object-cover opacity-50 grayscale-[30%] hover:scale-105 transition-transform duration-[3s]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none" />
               <div className="absolute bottom-6 left-6 pointer-events-none">
                 <p className="text-[8px] font-bold uppercase tracking-[0.5em] text-[#C8A96E]/60">
-                  Calacatta Gold
+                  Established 2005
                 </p>
               </div>
+
             </div>
           </div>
 

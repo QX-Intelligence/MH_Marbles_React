@@ -8,30 +8,38 @@ gsap.registerPlugin(ScrollTrigger);
 
 const TIMELINE = [
     {
-        year: "1984",
-        title: "The First Cut.",
-        desc: "Founded in a small artisanal workshop in Verona, Italy. True marble curation began with a single diamond saw and an obsession with impossible precision.",
-        img: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&q=80&w=1200"
+        year: "2005",
+        title: "The Genesis.",
+        desc: "Started Thandur hyd at Suraram, marking a strong beginning for our journey. A legacy built on the solid foundation of natural stone curation and uncompromising quality.",
+        img: "/assets/Aboutus/1st-image.png"
     },
     {
-        year: "1998",
-        title: "The Master Vein.",
-        desc: "Secured exclusive rights to the legendary deepest vein of the Apuan Alps, allowing us to supply monolithic blocks previously thought un-extractable.",
-        img: "https://images.unsplash.com/photo-1518002054494-3a6f94352e9d?auto=format&fit=crop&q=80&w=1200"
+        year: "2007",
+        title: "Turning Vision.",
+        desc: "The introduction of exquisite marble from Rajasthan, a strategic expansion that saw monumental success and solidified our reputation in the high-end architectural market.",
+        img: "/assets/Aboutus/2nd-image.png"
     },
     {
-        year: "2012",
-        title: "Algorithmic Era.",
-        desc: "Pioneered the integration of 5-axis robotics with traditional handcrafted polishing, achieving a zero-defect yield on complex architectural installations.",
-        img: "https://images.unsplash.com/photo-1544465544-1b71aee9dfa3?auto=format&fit=crop&q=80&w=1200"
+        year: "2013",
+        title: "Rising Through Adversity.",
+        desc: "Expanded our narrative by introducing premium granite from renowned global hubs, including Rajasthan, Bengaluru, Karnataka, and Chimakurti.",
+        img: "/assets/Aboutus/3rd-image.png"
     },
     {
-        year: "2024",
-        title: "Visionary Gallery.",
-        desc: "Opening of the London Atelier. A new paradigm in stone curation, focusing entirely on ultra-elite, off-market slabs for private visionaries.",
-        img: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200"
+        year: "2020",
+        title: "Modern Portfolio.",
+        desc: "Post-Pandemic Expansion: Introducing a luxurious collection of Vitrified Tiles, Smart Marbles, and Sanitary Ware, masterfully curated from Gujarat (Morbi) and China.",
+        img: "/assets/Aboutus/4th-image.png"
+    },
+    {
+        year: "2025",
+        title: "Gandi Maisamma.",
+        desc: "Celebrating the opening of Branch 2 at Gandi Maisamma. Continuing our legacy by introducing Natural Travertine and Nano White to the modern architectural palette.",
+        img: "/assets/Aboutus/5th-image.png"
     }
 ];
+
+
 
 const HeritagePage = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -108,7 +116,8 @@ const HeritagePage = () => {
                 ]}
             />
             
-            <PageLayout title="The Legacy." subtitle="Four Decades">
+            <PageLayout title="The Legacy." subtitle="21+ Years">
+
                 
                 {/* Immersive Deep Z-Index Container */}
                 <div ref={containerRef} className="relative w-full bg-background text-foreground overflow-hidden min-h-screen border-t border-foreground/5 pb-64">
@@ -117,10 +126,11 @@ const HeritagePage = () => {
                     <div className="absolute inset-0 z-0 opacity-20 sepia-[0.5] mix-blend-screen overflow-hidden pointer-events-none">
                         <img 
                             ref={bgImageRef}
-                            src="https://images.unsplash.com/photo-1544465544-1b71aee9dfa3?auto=format&fit=crop&q=80&w=2000" 
+                            src="/assets/Aboutus/1st-image.png"
                             alt="Quarry Legacy" 
                             className="w-full h-[150%] object-cover transform-gpu origin-top"
                         />
+
                         <div className="absolute inset-0 bg-background/80" />
                     </div>
                     
@@ -130,11 +140,11 @@ const HeritagePage = () => {
                         <div className="px-6 md:px-[8%] mb-48 text-center max-w-4xl mx-auto">
                             <span className="text-[10px] md:text-xs font-sans font-black tracking-[1em] text-[#C8A96E] uppercase mb-8 block">Origins</span>
                             <h2 className="text-5xl md:text-7xl font-serif font-light leading-[0.9] tracking-tighter mb-10">
-                                Born in the <br/>
-                                <span className="italic text-foreground/50">Apuan Alps.</span>
+                                The Excellence of <br/>
+                                <span className="italic text-foreground/50">MH MARBLE.</span>
                             </h2>
                             <p className="text-xl md:text-2xl font-light text-foreground/60 leading-relaxed font-sans">
-                                Our legacy was carved by hand before it was ever touched by robotics. Over 40 years of relentless pursuit of architectural perfection.
+                                Our legacy was carved by hand before it was ever touched by modernization. 21+ years of relentless pursuit of architectural perfection.
                             </p>
                         </div>
 
@@ -188,7 +198,8 @@ const HeritagePage = () => {
                     {/* Footer Cap */}
                     <div className="relative z-10 text-center mt-64 border-t border-foreground/10 pt-32 w-full max-w-3xl mx-auto">
                         <h4 className="text-4xl font-serif font-light italic text-[#C8A96E] mb-6">"The stone remains. Only the methods evolve."</h4>
-                        <span className="text-[9px] font-sans font-black uppercase tracking-[0.5em] text-foreground/50 block">M.H. — Founder, 1984</span>
+                        <span className="text-[9px] font-sans font-black uppercase tracking-[0.5em] text-foreground/50 block">M.H. — Founder, 2005</span>
+
                     </div>
 
                 </div>

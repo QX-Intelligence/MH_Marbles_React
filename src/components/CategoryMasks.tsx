@@ -9,12 +9,12 @@ import { categories as staticCategories, initialTiles } from '@/data/tiles';
 gsap.registerPlugin(ScrollTrigger);
 
 const getCategoryImage = (categoryId: string): string => {
-    // Curated "Flat / 180-Degree" assets for a clean typographic reveal
+    // Curated high-fidelity assets from the local repository
     const assets: Record<string, string> = {
-        marble: '/assets/masks/marble.png',
-        granite: '/assets/masks/granite.png',
-        vitrified: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=2600',
-        wooden: 'https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?auto=format&fit=crop&q=80&w=2600'
+        marble: '/assets/CategoryMasks/Tiles.png',
+        granite: '/assets/CategoryMasks/Granite.png',
+        vitrified: '/assets/CategoryMasks/VertifiedTiles.png',
+        wooden: '/assets/CategoryMasks/WoodenFinish.png'
     };
     
     if (assets[categoryId]) return assets[categoryId];
@@ -22,6 +22,7 @@ const getCategoryImage = (categoryId: string): string => {
     const tile = initialTiles.find(t => t.category === categoryId);
     return tile?.image || 'https://images.unsplash.com/photo-1618221118493-9cfa1a1c00da?auto=format&fit=crop&q=80&w=2000';
 };
+
 
 export function CategoryMasks() {
   const { resolvedTheme } = useTheme();

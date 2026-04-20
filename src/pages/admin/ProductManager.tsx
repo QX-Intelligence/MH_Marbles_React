@@ -349,7 +349,7 @@ const ProductManager = () => {
                 </div>
 
                 <div className="col-span-2 space-y-3">
-                  <Label className="text-[9px] font-black uppercase tracking-widest text-foreground/40">Product Image (Up to 5 Slabs/Angles)</Label>
+                  <Label className="text-[9px] font-black uppercase tracking-widest text-foreground/40">Product Image (Up to 5 Tile/Angles)</Label>
                   <div className="flex flex-col gap-6">
                     <div className="relative group cursor-pointer" onClick={() => document.getElementById('product-image-upload')?.click()}>
                       <div className="bg-foreground/5 border border-foreground/10 rounded-none h-32 flex flex-col items-center justify-center group-hover:bg-foreground/[0.08] transition-all border-dashed">

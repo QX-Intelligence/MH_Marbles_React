@@ -30,24 +30,29 @@ const SEO: React.FC<SEOProps> = ({
   breadcrumbs,
   articleData
 }) => {
-  const siteName = 'MH MARBLES';
+  const siteName = 'MH MARBLE';
+
   const fullTitle = title ? `${title} | ${siteName}` : `${siteName} | Visionary Architectural Gallery`;
-  const defaultDescription = 'Curators of the earth\'s most exquisite architectural statements for the discerning visionary since 1980.';
+  const defaultDescription = 'Curators of the earth\'s most exquisite architectural statements for the discerning visionary since 2005.';
+
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
-  const siteUrl = 'https://mhmarbles.com';
+  const siteUrl = 'https://www.mhmarble.com';
   const fullImage = image.startsWith('http') ? image : `${siteUrl}${image}`;
 
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": siteName,
+    "alternateName": ["mhmarble", "m h marble", "mh marbles", "mh marble hyderabad"],
     "url": siteUrl,
+
     "logo": `${siteUrl}/Logo1.png`,
     "description": defaultDescription,
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "MH Marble, PLOT No : 5/A, DOMMARA POCHAMPALLY, SARA GUDEM CHOWRASTA MAIN ROAD",
+      "streetAddress": "MH MARBLE, Gandi Maisamma",
+
       "addressLocality": "Hyderabad",
       "addressRegion": "Telangana",
       "postalCode": "500043",
@@ -110,7 +115,11 @@ const SEO: React.FC<SEOProps> = ({
       <title>{fullTitle}</title>
       <meta name="description" content={description || defaultDescription} />
       <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+      <meta name="keywords" content="mhmarble, mh marble, mh marble hyderabad, quality tiles hyderabad, architectural stone hyderabad, tiles showroom gandi maisamma, vitrified tiles, granite hyderabad" />
+
+      <link rel="icon" type="image/png" href="/Logo1.png" />
       {canonical && <link rel="canonical" href={canonical} />}
+
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
@@ -126,7 +135,8 @@ const SEO: React.FC<SEOProps> = ({
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description || defaultDescription} />
       <meta name="twitter:image" content={fullImage} />
-      <meta name="twitter:site" content="@mhmarbles" />
+      <meta name="twitter:site" content="@mhmarble" />
+
 
       {/* Article Specific */}
       {type === 'article' && articleData && (

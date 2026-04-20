@@ -54,7 +54,7 @@ export function Header() {
             <Link to="/" className="group flex items-center gap-2 shrink-0">
               <img 
                 src="/Logo1.png" 
-                alt="MH Marbles" 
+                alt="MH MARBLE" 
                 className={cn(
                   "h-7 md:h-9 w-auto object-contain transition-all duration-700 group-hover:scale-105"
                 )}

@@ -5,10 +5,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const storeInfo = {
-  name: 'MH Marbles Showroom',
-  address: 'MH Marble, PLOT No : 5/A, DOMMARA POCHAMPALLY, SARA GUDEM CHOWRASTA MAIN ROAD, Hyderabad, Medchal Malkajgiri, Telangana 500043',
+  name: 'MH MARBLE Showroom',
+
+  address: 'MH MARBLE, Gandi Maisamma, Hyderabad, Telangana 500043',
   phone: '+91 98667 55272 / +91 79956 69012',
   email: 'curator@mhmarble.com',
+
   hours: [
     { day: 'Monday - Saturday', time: '09:00AM to 8:00PM' },
     { day: 'Sunday', time: '09:00AM to 2:00PM' },
@@ -92,12 +94,11 @@ export function Contact() {
                 <div>
                   <p className="text-[8px] font-black uppercase tracking-[0.5em] text-[#C8A96E]/50 mb-4">The Gallery</p>
                   <p className="text-sm md:text-base font-serif font-light text-foreground/60 leading-relaxed italic">
-                    MH Marble,<br />
-                    PLOT No : 5/A, DOMMARA POCHAMPALLY,<br />
-                    SARA GUDEM CHOWRASTA MAIN ROAD,<br />
+                    MH MARBLE,<br />
+                    Gandi Maisamma,<br />
                     Hyderabad,<br />
-                    Medchal Malkajgiri,<br />
                     Telangana 500043
+
                   </p>
                 </div>
 
