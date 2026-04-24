@@ -12,7 +12,7 @@ export function MobileSticky() {
           Call
         </a>
         <a
-          href="https://www.google.com/maps/dir/?api=1&destination=17.4947,78.4177"
+          href="https://maps.app.goo.gl/1Zw49Pathps4Q1gSA"
           target="_blank"
           rel="noopener noreferrer"
           className="flex-1 flex items-center justify-center gap-3 bg-[#C8A96E] text-background py-4 rounded-none font-black uppercase text-[8px] tracking-[0.4em] transition-all active:scale-95 shadow-gold"

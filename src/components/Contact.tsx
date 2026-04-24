@@ -16,7 +16,7 @@ const storeInfo = {
     { day: 'Sunday', time: '09:00AM to 2:00PM' },
   ],
   mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3803.3283958351853!2d78.41114681149787!3d17.587133983264955!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb8f0074a18a4b%3A0x819cf9a0f10e629d!2sMH%20MARBLE!5e0!3m2!1sen!2sin!4v1776332177462!5m2!1sen!2sin',
-  directionsUrl: 'https://www.google.com/maps/dir/?api=1&destination=MH+MARBLE,+Gandi+Maisamma,+Hyderabad',
+  directionsUrl: 'https://maps.app.goo.gl/Mjga1crLW6w6ftmp8',
 
 };
 

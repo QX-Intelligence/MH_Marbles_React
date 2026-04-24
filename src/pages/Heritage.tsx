@@ -180,11 +180,11 @@ const HeritagePage = () => {
                                             </div>
 
                                             {/* Supporting Image Array */}
-                                            <div className="flex-1 hidden md:block aspect-[4/5] relative overflow-hidden ring-1 ring-foreground/10">
+                                            <div className="flex-1 hidden md:block relative overflow-hidden ring-1 ring-foreground/10">
                                                 <img 
                                                     src={item.img} 
                                                     alt={item.title} 
-                                                    className="heritage-image absolute inset-0 w-full h-full object-cover grayscale-[50%] contrast-125 sepia-[0.2]"
+                                                    className="heritage-image w-full h-auto object-contain grayscale-[50%] contrast-125 sepia-[0.2] block"
                                                 />
                                             </div>
 
