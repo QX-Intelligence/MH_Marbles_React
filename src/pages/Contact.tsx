@@ -72,7 +72,7 @@ const ContactPage = () => {
         <>
             <SEO 
                 title="Contact Us | Inquiry & Support" 
-                description="Get in touch with the MH Marbles curation team. Request consultations, quotes, or bespoke stone sourcing for your architectural projects."
+                description="Get in touch with the MH Marble curation team. Request consultations, quotes, or bespoke stone sourcing for your architectural projects."
                 breadcrumbs={[
                     { name: 'Home', item: '/' },
                     { name: 'Contact', item: '/contact' }

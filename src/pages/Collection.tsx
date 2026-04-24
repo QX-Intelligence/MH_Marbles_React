@@ -364,7 +364,7 @@ const Collection = () => {
   return (
     <>
       <SEO
-        title="The Collection | MH Marbles"
+        title="The Collection | MH Marble"
         description="Explore our curated archive of masterpiece marbles. Sourced worldwide, selected for rarity."
         breadcrumbs={[
           { name: 'Home', item: '/' },

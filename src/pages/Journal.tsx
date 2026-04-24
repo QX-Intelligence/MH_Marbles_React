@@ -241,7 +241,6 @@ const JournalPage: React.FC = () => {
 
             <PageLayout>
                 <div className="min-h-screen bg-background text-foreground">
-                    <Header />
 
                     {/* Experimental Hero Section */}
                     <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden border-b border-foreground/5">
@@ -302,26 +301,8 @@ const JournalPage: React.FC = () => {
                         </div>
                     </section>
 
-                    {/* Minimalist CTA */}
-                    <section className="py-32 md:py-48 bg-secondary relative border-t border-foreground/5">
-                        <div className="w-full max-w-none px-6 md:px-[8%] relative z-10 text-center">
-                            <div className="max-w-4xl mx-auto">
-                                <span className="text-[10px] font-sans font-black tracking-[0.8em] uppercase text-[#C8A96E] mb-10 block">Submit Your Narrative</span>
-                                <h3 className="text-5xl sm:text-6xl md:text-8xl font-serif font-light leading-[0.9] tracking-tighter mb-10 md:mb-16">
-                                    Become part <br />
-                                    <span className="italic text-foreground/50">of the story.</span>
-                                </h3>
-                                <p className="text-base md:text-xl font-sans font-light text-foreground/40 leading-relaxed mb-16 max-w-2xl mx-auto">
-                                    We are continually seeking to share the extraordinary ways our stones have transformed architectural spaces.
-                                </p>
-                                <a href="/contact" className="inline-flex items-center justify-center border border-foreground/20 hover:border-[#C8A96E] hover:bg-[#C8A96E]/10 h-16 md:h-20 px-12 md:px-16 text-[9px] font-black uppercase tracking-[0.5em] transition-all duration-700 text-foreground">
-                                    Contact Us
-                                </a>
-                            </div>
-                        </div>
-                    </section>
 
-                    <Footer />
+
                 </div>
             </PageLayout>
         </>

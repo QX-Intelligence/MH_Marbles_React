@@ -124,7 +124,7 @@ const Verification = () => {
       <div className="absolute top-10 left-12 z-50 flex flex-col items-center group">
         <img 
           src="/Logo1.png" 
-          alt="MH Marbles" 
+          alt="MH Marble" 
           className="w-24 h-24 object-contain group-hover:scale-110 transition-transform duration-700"
         />
         <div className="mt-2 text-center">

@@ -300,10 +300,9 @@ export const initialTiles: Tile[] = [
 
 export const categories = [
   { id: 'marble', name: 'Tiles', icon: '💎' },
-
   { id: 'granite', name: 'Granite', icon: '🪨' },
-  { id: 'vitrified', name: 'Vitrified Tiles', icon: '✨' },
-  { id: 'wooden', name: 'Wooden Finish', icon: '🌳' },
+  { id: 'vitrified', name: 'Vitrified', icon: '✨' },
+  { id: 'wooden', name: 'Wooden', icon: '🌳' },
 ] as const;
 
 export const colors = ['White', 'Black', 'Brown', 'Grey', 'Beige'] as const;

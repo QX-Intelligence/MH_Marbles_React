@@ -13,7 +13,7 @@ const Companies = () => {
     <>
       <SEO 
         title="Our Partners | Global Quarry Network" 
-        description="Explore the global network of premier stone brands and quarry origins curated by MH Marbles."
+        description="Explore the global network of premier stone brands and quarry origins curated by MH Marble."
         breadcrumbs={[
           { name: 'Home', item: '/' },
           { name: 'Companies', item: '/companies' }

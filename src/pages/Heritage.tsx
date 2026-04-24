@@ -109,7 +109,7 @@ const HeritagePage = () => {
         <>
             <SEO 
                 title="Our Heritage | Legacy of Architectural Stone" 
-                description="Explore the legacy of MH Marbles. From artisanal beginnings in Italy to the forefront of robotic architectural stone carving across four decades."
+                description="Explore the legacy of MH Marble. From artisanal beginnings in Italy to the forefront of robotic architectural stone carving across four decades."
                 breadcrumbs={[
                   { name: 'Home', item: '/' },
                   { name: 'Heritage', item: '/heritage' }

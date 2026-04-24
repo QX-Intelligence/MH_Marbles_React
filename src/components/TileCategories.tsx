@@ -43,7 +43,7 @@ export function TileCategories() {
           </h2>
           
           <p className="text-sm md:text-base text-foreground/50 font-sans leading-relaxed tracking-wide max-w-md mb-12 border-l border-border pl-6">
-            MH Marbles offers premium wall and floor tiles, combining advanced technology with elegant designs for lasting quality. Explore curated spaces defined by monolithic grace.
+            MH Marble offers premium wall and floor tiles, combining advanced technology with elegant designs for lasting quality. Explore curated spaces defined by monolithic grace.
           </p>
           
           <Link to="/collection" className="group inline-flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-foreground hover:text-accent transition-colors">

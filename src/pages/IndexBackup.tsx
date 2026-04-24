@@ -57,12 +57,12 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>MH MARBLES | Visionary Architectural Gallery & Signature Stone Curation</title>
+        <title>MH MARBLE | Visionary Architectural Gallery & Signature Stone Curation</title>
         <meta name="description" content="Curators of the earth's most exquisite architectural statements. Discover our signature collection of Italian marble and exotic stones, crafted for the discerning visionary since 1980." />
         <meta name="keywords" content="luxury marble gallery, premium architectural stone, Italian marble curation, exotic granite, signature surfaces, high-end stone workshop" />
 
         {/* Open Graph */}
-        <meta property="og:title" content="MH MARBLES | Visionary Architectural Gallery" />
+        <meta property="og:title" content="MH MARBLE | Visionary Architectural Gallery" />
         <meta property="og:description" content="Curating the earth's most exquisite architectural statements for the discerning visionary." />
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="en_IN" />
