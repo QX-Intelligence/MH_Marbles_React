@@ -6,7 +6,7 @@ import { GalleryCard } from '@/components/CollectionViews';
 import { useGallery } from '@/contexts/GalleryContext';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Filter, Search, X, ChevronDown, SlidersHorizontal } from 'lucide-react';
 import {
   Sheet,
@@ -172,8 +172,17 @@ const SidebarContent = ({
 // ─── Main Page Component ─────────────────────────────────────────────────────
 const Collection = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const urlCategory = searchParams.get('category');
   const urlBrand = searchParams.get('brand');
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/');
+    }
+  };
   
   const { backendTiles, nextPageUrl, loadMoreTiles, categories, brands } = useGallery();
   const heroRef = useRef<HTMLDivElement>(null);
@@ -376,6 +385,20 @@ const Collection = () => {
         {/* Hero Section */}
         <div ref={heroRef} className="h-[75vh] w-full relative bg-background flex items-center justify-center overflow-hidden border-b border-border">
           <div className="absolute inset-0 opacity-[0.03] mix-blend-screen pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+          
+          {/* Breadcrumb / Back Button */}
+          <div className="absolute top-28 left-6 md:left-[3%] z-40 flex items-center gap-3">
+            <button
+              onClick={handleBack}
+              className="text-[8px] font-black uppercase tracking-[0.3em] text-foreground/40 hover:text-[#C8A96E] transition-colors"
+            >
+              Home
+            </button>
+            <span className="text-foreground/20 text-[8px]">/</span>
+            <span className="text-[8px] font-black uppercase tracking-[0.3em] text-[#C8A96E]">
+              Collection
+            </span>
+          </div>
           
           {/* Decorative Background Elements */}
           <div className="absolute top-[12%] left-[8%] w-[25%] aspect-[3/4] border border-border overflow-hidden z-0 hidden md:block opacity-[0.08] grayscale hover:opacity-20 transition-opacity duration-1000">
