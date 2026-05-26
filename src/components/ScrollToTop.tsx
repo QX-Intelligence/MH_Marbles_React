@@ -32,7 +32,6 @@ export default function ScrollToTop() {
   // 3. Handle route changes
   useEffect(() => {
     const cacheKey = location.key || (location.pathname + location.search);
-    const timers: number[] = [];
 
     if (navigationType === "POP") {
       const targetScrollY = scrollPositions[cacheKey] || 0;
@@ -51,67 +50,79 @@ export default function ScrollToTop() {
       // Mark as restoring to ignore temporary scroll events during jump
       isRestoringRef.current = true;
 
-      // Retry mechanism to wait for the page height to load (since pages load categories/products dynamically)
-      let attempts = 0;
-      const maxAttempts = 30; // ~500ms maximum wait
-
-      const tryScroll = () => {
-        const docHeight = Math.max(
-          document.body.scrollHeight,
-          document.documentElement.scrollHeight,
-          document.body.offsetHeight,
-          document.documentElement.offsetHeight
-        );
-        const windowHeight = window.innerHeight;
-
-        // If the document is tall enough to reach targetScrollY, or we hit max attempts
-        if (docHeight - windowHeight >= targetScrollY || attempts >= maxAttempts) {
-          const lenis = (window as any).lenis;
-          if (lenis) {
-            lenis.scrollTo(targetScrollY, { immediate: true });
-            // Sync GSAP ScrollTrigger
-            if ((window as any).ScrollTrigger) {
-              (window as any).ScrollTrigger.update();
-            }
-          } else {
-            window.scrollTo(0, targetScrollY);
+      const performScroll = () => {
+        const lenis = (window as any).lenis;
+        if (lenis) {
+          lenis.scrollTo(targetScrollY, { immediate: true });
+          // Sync GSAP ScrollTrigger
+          if ((window as any).ScrollTrigger) {
+            (window as any).ScrollTrigger.update();
           }
-          // Reset the restoring flag in the next frame to let layout settle
-          setTimeout(() => {
-            isRestoringRef.current = false;
-          }, 50);
         } else {
-          attempts++;
-          requestAnimationFrame(tryScroll);
+          window.scrollTo(0, targetScrollY);
         }
       };
 
-      requestAnimationFrame(tryScroll);
+      // Perform initial scroll check
+      performScroll();
 
-      // Also schedule correction scrolls after GSAP settles on the home page (at 400ms and 1000ms triggers)
-      if (location.pathname === "/") {
-        const runCorrection = () => {
-          const latestTargetScrollY = scrollPositions[cacheKey] || 0;
-          if (latestTargetScrollY > 0) {
-            isRestoringRef.current = true;
-            const lenis = (window as any).lenis;
-            if (lenis) {
-              lenis.scrollTo(latestTargetScrollY, { immediate: true });
-              if ((window as any).ScrollTrigger) {
-                (window as any).ScrollTrigger.update();
-              }
-            } else {
-              window.scrollTo(0, latestTargetScrollY);
-            }
-            setTimeout(() => {
-              isRestoringRef.current = false;
-            }, 50);
+      let observer: ResizeObserver | null = null;
+      let timeoutId: number;
+
+      const cleanup = () => {
+        if (observer) {
+          observer.disconnect();
+          observer = null;
+        }
+        window.removeEventListener("wheel", abortRestoration);
+        window.removeEventListener("touchmove", abortRestoration);
+        window.removeEventListener("pointerdown", abortRestoration);
+        clearTimeout(timeoutId);
+        
+        // Reset restoration flag
+        setTimeout(() => {
+          isRestoringRef.current = false;
+        }, 50);
+      };
+
+      const abortRestoration = () => {
+        cleanup();
+      };
+
+      // If user starts interacting, abort restoration to avoid fighting/jumping
+      window.addEventListener("wheel", abortRestoration, { passive: true });
+      window.addEventListener("touchmove", abortRestoration, { passive: true });
+      window.addEventListener("pointerdown", abortRestoration, { passive: true });
+
+      // Observe height changes dynamically (async data load, GSAP layout shifts)
+      observer = new ResizeObserver(() => {
+        performScroll();
+
+        const docHeight = Math.max(
+          document.body.scrollHeight,
+          document.documentElement.scrollHeight
+        );
+        const windowHeight = window.innerHeight;
+
+        // If successfully restored or reached end of page, cleanup observer
+        if (
+          Math.abs(window.scrollY - targetScrollY) < 5 ||
+          window.scrollY + windowHeight >= docHeight - 5
+        ) {
+          if (Math.abs(window.scrollY - targetScrollY) < 5) {
+            cleanup();
           }
-        };
+        }
+      });
 
-        timers.push(window.setTimeout(runCorrection, 600));
-        timers.push(window.setTimeout(runCorrection, 1200));
-      }
+      observer.observe(document.body);
+
+      // Safe fallback timeout to release observer
+      timeoutId = window.setTimeout(cleanup, 4000);
+
+      return () => {
+        cleanup();
+      };
     } else {
       // Push/Replace navigation: Reset to top
       const lenis = (window as any).lenis;
@@ -122,10 +133,6 @@ export default function ScrollToTop() {
       }
       isRestoringRef.current = false;
     }
-
-    return () => {
-      timers.forEach(clearTimeout);
-    };
   }, [location.pathname, location.search, navigationType]);
 
   return null;
