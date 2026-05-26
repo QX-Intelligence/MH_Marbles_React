@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { Tile } from '@/data/tiles';
 import { useGallery } from '@/contexts/GalleryContext';
 import { cn, getOptimizedImageUrl } from '@/lib/utils';
@@ -138,8 +139,8 @@ SidebarContent.displayName = 'SidebarContent';
 // ─── Product Card (memoized — only re-renders when its own tile prop changes) ──
 const ProductCard = React.memo(({ tile }: { tile: Tile }) => {
   return (
-    <a
-      href={`/product/${tile.id}`}
+    <Link
+      to={`/product/${tile.id}`}
       className="group relative flex flex-col w-full bg-background border border-foreground/[0.04] transition-all duration-700 outline-none ring-0 overflow-hidden group"
     >
       {/* Cinematic Image Container */}
@@ -193,7 +194,7 @@ const ProductCard = React.memo(({ tile }: { tile: Tile }) => {
       <div className="absolute top-4 right-4 z-10 px-2 py-1 bg-foreground/5 backdrop-blur-sm border border-foreground/[0.1] rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500">
          <span className="text-[7px] font-black uppercase tracking-widest text-foreground/60">{tile.brand || 'Luxury'}</span>
       </div>
-    </a>
+    </Link>
   );
 });
 ProductCard.displayName = 'ProductCard';

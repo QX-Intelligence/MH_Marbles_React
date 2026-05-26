@@ -1,7 +1,8 @@
 /**
- * CollectionViews.tsx — 4 premium product display layouts
+ * CollectionViews.tsx â€” 4 premium product display layouts
  */
 import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { useGallery } from '@/contexts/GalleryContext';
 import { getOptimizedImageUrl, cn } from '@/lib/utils';
 import { Tile } from '@/data/tiles';
@@ -72,7 +73,7 @@ export const ImmersiveFullscreen: React.FC = () => {
               key={tile.id}
               className={`masonry-item group relative flex flex-col ${colSpan} ${rowSpan} ${alignSelf} w-full`}
             >
-              <a href={`/product/${tile.id}`} className="block overflow-hidden relative border border-border">
+              <Link to={`/product/${tile.id}`} className="block overflow-hidden relative border border-border">
                 <div className={`aspect-[4/5] md:aspect-auto ${isTall ? 'h-[600px]' : 'h-[400px]'} w-full overflow-hidden`}>
                    {tile.image_url || tile.image ? (
                     <img
@@ -95,7 +96,7 @@ export const ImmersiveFullscreen: React.FC = () => {
 
                 {/* Corner Accents */}
                 <div className="absolute top-4 right-4 w-6 h-6 border-t border-r border-border group-hover:border-accent/40 transition-colors duration-500" />
-              </a>
+              </Link>
 
               <div className="mt-8 flex flex-col gap-2 max-w-sm">
                 <span className="text-[9px] font-black uppercase tracking-[0.5em] text-accent">
@@ -107,7 +108,7 @@ export const ImmersiveFullscreen: React.FC = () => {
                 <div className="h-[1px] w-12 bg-foreground/10 group-hover:w-24 group-hover:bg-accent transition-all duration-700 mt-2" />
                 <div className="flex justify-between items-center mt-4">
                    <p className="text-[8px] uppercase tracking-widest text-foreground/70 font-black">
-                    {tile.finish} · {tile.origin}
+                    {tile.finish} Â· {tile.origin}
                   </p>
                   <span className="text-[10px] text-accent opacity-0 group-hover:opacity-100 transition-opacity translate-x-4 group-hover:translate-x-0 transition-transform duration-500">
                     Discover &rarr;
@@ -122,9 +123,9 @@ export const ImmersiveFullscreen: React.FC = () => {
   );
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// VIEW 2: CURATOR'S GALLERY — Symmetrical minimal grid with detail lens
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// VIEW 2: CURATOR'S GALLERY â€” Symmetrical minimal grid with detail lens
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const GalleryCard = React.memo(({ tile, i }: { tile: Tile, i: number }) => {
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
   const [isHovered, setIsHovered] = useState(false);
@@ -165,12 +166,12 @@ export const GalleryCard = React.memo(({ tile, i }: { tile: Tile, i: number }) =
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <a href={`/product/${tile.id}`} 
+      <Link to={`/product/${tile.id}`} 
          className="block relative aspect-[3/2] overflow-hidden bg-foreground/5"
       >
         {images[0] ? (
           <>
-            {/* Crossfade image stack — all images rendered, opacity transitions between them */}
+            {/* Crossfade image stack â€” all images rendered, opacity transitions between them */}
             {images.map((src, idx) => (
               <img
                 key={src}
@@ -231,12 +232,12 @@ export const GalleryCard = React.memo(({ tile, i }: { tile: Tile, i: number }) =
         )}
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      </a>
+      </Link>
 
       <div className="p-8 flex flex-col gap-1 relative">
         <div className="absolute top-0 left-8 right-8 h-[1px] bg-foreground/5 group-hover:bg-accent/30 transition-colors duration-500" />
         <span className="text-[8px] font-black uppercase tracking-[0.6em] text-accent/80 mb-2">
-          {String(i + 1).padStart(2, '0')} — {tile.category_name || 'Specimen'}
+          {String(i + 1).padStart(2, '0')} â€” {tile.category_name || 'Specimen'}
         </span>
         <h3 className="text-2xl font-serif font-light text-foreground tracking-tight group-hover:text-accent transition-colors duration-500">
           {tile.name}
@@ -244,7 +245,7 @@ export const GalleryCard = React.memo(({ tile, i }: { tile: Tile, i: number }) =
         <div className="flex justify-between items-end mt-6">
           <div className="flex flex-col gap-1">
             <span className="text-[7px] uppercase tracking-[0.3em] text-foreground/60 font-black">Technical Data</span>
-            <span className="text-[9px] uppercase tracking-widest text-foreground/70 font-bold">{tile.finish} · {tile.size || 'Custom'}</span>
+            <span className="text-[9px] uppercase tracking-widest text-foreground/70 font-bold">{tile.finish} Â· {tile.size || 'Custom'}</span>
           </div>
           <span className="text-[7px] font-black uppercase tracking-[0.4em] text-foreground/60 group-hover:text-foreground transition-colors">
             Details &rarr;
@@ -272,7 +273,7 @@ export const ScatteredFreeform: React.FC = () => {
         </div>
         <div className="flex flex-col items-end gap-4 text-right">
           <p className="text-[9px] tracking-widest uppercase text-foreground/70 font-black">
-            Manual Curation · {tiles.length} Specimens
+            Manual Curation Â· {tiles.length} Specimens
           </p>
           <div className="w-32 h-[1px] bg-foreground/10" />
         </div>
@@ -287,9 +288,9 @@ export const ScatteredFreeform: React.FC = () => {
   );
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// VIEW 3: ARCHITECT'S INDEX — Technical list with ghost previews
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// VIEW 3: ARCHITECT'S INDEX â€” Technical list with ghost previews
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const FilmStrip: React.FC = () => {
   const tiles = useTiles();
   const [hoveredTile, setHoveredTile] = useState<Tile | null>(null);
@@ -342,9 +343,9 @@ export const FilmStrip: React.FC = () => {
 
           {/* Rows */}
           {tiles.map((tile, i) => (
-            <a
+            <Link
               key={tile.id}
-              href={`/product/${tile.id}`}
+              to={`/product/${tile.id}`}
               className="grid grid-cols-4 md:grid-cols-12 py-8 md:py-10 border-b border-border px-4 items-center group hover:bg-foreground/5 transition-colors duration-300"
               onMouseEnter={() => setHoveredTile(tile)}
               onMouseLeave={() => setHoveredTile(null)}
@@ -383,7 +384,7 @@ export const FilmStrip: React.FC = () => {
                   &rarr;
                 </span>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -391,9 +392,9 @@ export const FilmStrip: React.FC = () => {
   );
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// VIEW 4: INFINITY ROWS — Kinetic showroom wall
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// VIEW 4: INFINITY ROWS â€” Kinetic showroom wall
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const SlabRow = ({ tiles, speed, direction = 1 }: { tiles: Tile[], speed: number, direction?: 1 | -1 }) => {
   const rowRef = useRef<HTMLDivElement>(null);
 
@@ -419,9 +420,9 @@ const SlabRow = ({ tiles, speed, direction = 1 }: { tiles: Tile[], speed: number
   return (
     <div className="flex gap-8 py-12 select-none" ref={rowRef}>
       {[...tiles, ...tiles].map((tile, i) => (
-        <a
+        <Link
           key={`${tile.id}-${i}`}
-          href={`/product/${tile.id}`}
+          to={`/product/${tile.id}`}
           className="group shrink-0 relative block"
           style={{ width: 'clamp(280px, 40vw, 380px)' }}
         >
@@ -443,7 +444,7 @@ const SlabRow = ({ tiles, speed, direction = 1 }: { tiles: Tile[], speed: number
           
           {/* Floor Shadow */}
           <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[90%] h-6 bg-black/60 blur-2xl rounded-full scale-x-150 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-        </a>
+        </Link>
       ))}
     </div>
   );
@@ -477,7 +478,7 @@ export const DramaticSplit: React.FC = () => {
 
       <div className="max-w-[1600px] mx-auto px-8 md:px-16 mt-24 text-center">
         <p className="text-[9px] tracking-[0.4em] uppercase font-black text-foreground/60">
-          Total Collection Height: {tiles.length * 3} Meters · Interactive Surface
+          Total Collection Height: {tiles.length * 3} Meters Â· Interactive Surface
         </p>
       </div>
     </div>

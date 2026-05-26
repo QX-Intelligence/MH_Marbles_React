@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 import { Tile } from '@/data/tiles';
 import { getOptimizedImageUrl } from '@/lib/utils';
@@ -88,13 +89,13 @@ const CinematicParallaxCard = React.memo(({ tile, index, total }: { tile: Tile, 
            <span className="w-1 h-1 rounded-full bg-white/20 hidden md:block" />
            <span className="text-[9px] font-black tracking-[0.2em] text-white/40 uppercase hidden md:block tracking-widest">Premium Selection</span>
          </div>
-         <a 
-           href={`/product/${tile.id}`}
+         <Link 
+           to={`/product/${tile.id}`}
            className="text-[9px] font-black tracking-[0.2em] text-[#C8A96E] hover:text-white uppercase transition-colors group flex items-center gap-3"
          >
            View Stone Details
            <span className="transition-transform group-hover:translate-x-2">&rarr;</span>
-         </a>
+         </Link>
       </div>
     </section>
   );

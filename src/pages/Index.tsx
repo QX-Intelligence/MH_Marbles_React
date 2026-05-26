@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import SEO from '@/components/SEO';
 import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
@@ -18,7 +19,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ── Page ──────────────────────────────────────────────────────────────────────
+// â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const Index = () => {
   const { backendTiles, brands } = useGallery();
 
@@ -123,7 +124,7 @@ const Index = () => {
           <FeaturedProducts />
           <TileCategories />
 
-          {/* ── Our Brand Partners Section ── */}
+          {/* â”€â”€ Our Brand Partners Section â”€â”€ */}
           <section className="py-24 md:py-32 bg-[#f5f3ef] border-t border-[#e0dbd3]">
             <div className="max-w-[1800px] mx-auto px-6 md:px-[6%]">
 
@@ -135,41 +136,44 @@ const Index = () => {
                     Our <span className="italic text-[#888]">Companies.</span>
                   </h2>
                 </div>
-                <a
-                  href="/companies"
+                <Link
+                  to="/companies"
                   className="text-[11px] font-black uppercase tracking-[0.3em] text-[#333] hover:text-[#C8A96E] transition-colors duration-500 flex items-center gap-3 shrink-0 border border-[#ccc] hover:border-[#C8A96E] px-6 py-3"
                 >
                   View All →
-                </a>
+                </Link>
               </div>
 
               {/* Brands Grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 border border-[#ddd]">
                 {brands.map((brand, index) => (
-                  <motion.a
+                  <Link
                     key={brand.id}
-                    href={`/collection?brand=${encodeURIComponent(brand.name)}`}
-                    initial={{ opacity: 0, y: 12 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.06, duration: 0.5 }}
-                    viewport={{ once: true }}
-                    className="group border border-[#e5e1da] flex flex-col items-center justify-center gap-4 p-8 min-h-[160px] bg-white hover:bg-[#faf8f5] hover:border-[#C8A96E]/40 transition-all duration-400 select-none outline-none"
+                    to={`/collection?brand=${encodeURIComponent(brand.name)}`}
                   >
-                    {brand.image_url || brand.logo ? (
-                      <img
-                        src={brand.image_url || brand.logo}
-                        alt={brand.name}
-                        className="h-12 w-auto object-contain opacity-100 group-hover:scale-105 transition-all duration-500"
-                      />
-                    ) : (
-                      <span className="text-4xl font-serif italic text-[#444] group-hover:text-[#C8A96E] transition-colors duration-500">
-                        {brand.name.charAt(0)}
+                    <motion.div
+                      initial={{ opacity: 0, y: 12 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.06, duration: 0.5 }}
+                      viewport={{ once: true }}
+                      className="group border border-[#e5e1da] flex flex-col items-center justify-center gap-4 p-8 min-h-[160px] bg-white hover:bg-[#faf8f5] hover:border-[#C8A96E]/40 transition-all duration-400 select-none outline-none"
+                    >
+                      {brand.image_url || brand.logo ? (
+                        <img
+                          src={brand.image_url || brand.logo}
+                          alt={brand.name}
+                          className="h-12 w-auto object-contain opacity-100 group-hover:scale-105 transition-all duration-500"
+                        />
+                      ) : (
+                        <span className="text-4xl font-serif italic text-[#444] group-hover:text-[#C8A96E] transition-colors duration-500">
+                          {brand.name.charAt(0)}
+                        </span>
+                      )}
+                      <span className="text-[12px] font-black uppercase tracking-[0.25em] text-[#1a1a1a] group-hover:text-[#C8A96E] transition-colors duration-500 text-center">
+                        {brand.name}
                       </span>
-                    )}
-                    <span className="text-[12px] font-black uppercase tracking-[0.25em] text-[#1a1a1a] group-hover:text-[#C8A96E] transition-colors duration-500 text-center">
-                      {brand.name}
-                    </span>
-                  </motion.a>
+                    </motion.div>
+                  </Link>
                 ))}
 
                 {brands.length === 0 && (
@@ -193,10 +197,10 @@ const Index = () => {
             <div className="text-center px-6 relative z-20">
                <h3 className="text-6xl sm:text-7xl md:text-9xl font-serif font-light tracking-tighter leading-[0.8] mb-12">Request <br /><span className="italic">Excellence.</span></h3>
                <div className="flex flex-col items-center">
-                  <a ref={reserve2Btn} href="/contact" className="group inline-flex items-center justify-center w-40 h-40 md:w-56 md:h-56 rounded-full bg-background text-[#C8A96E] text-[10px] font-black uppercase tracking-[0.4em] transition-all duration-700 hover:scale-105 shadow-2xl relative">
+                  <Link ref={reserve2Btn} to="/contact" className="group inline-flex items-center justify-center w-40 h-40 md:w-56 md:h-56 rounded-full bg-background text-[#C8A96E] text-[10px] font-black uppercase tracking-[0.4em] transition-all duration-700 hover:scale-105 shadow-2xl relative">
                     <div className="absolute inset-0 rounded-full border border-[#C8A96E]/20 scale-110 group-hover:scale-125 transition-transform duration-700" />
                     <span className="leading-relaxed z-10">Request <br/> Access <br/> &rarr;</span>
-                  </a>
+                  </Link>
                </div>
             </div>
           </div>

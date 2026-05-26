@@ -11,7 +11,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ─── Spec Row ─────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Spec Row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const SpecRow = ({ label, value }: { label: string; value?: string | number | null }) => {
   if (!value) return null;
   return (
@@ -22,7 +22,7 @@ const SpecRow = ({ label, value }: { label: string; value?: string | number | nu
   );
 };
 
-// ─── Related Product Card ─────────────────────────────────────────────────────
+// â”€â”€â”€ Related Product Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const RelatedCard = ({ tile }: { tile: { id: string | number; name: string; image_url?: string; image?: string; category_name?: string; category?: string | number; finish?: string; fill?: string } }) => (
   <Link
     to={`/product/${tile.id}`}
@@ -41,14 +41,14 @@ const RelatedCard = ({ tile }: { tile: { id: string | number; name: string; imag
     <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-3 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
       <p className="text-[8px] font-black uppercase tracking-[0.3em] text-[#C8A96E] mb-1">
-        {tile.category_name || String(tile.category || '')} · {tile.finish}
+        {tile.category_name || String(tile.category || '')} Â· {tile.finish}
       </p>
       <p className="text-base font-serif text-foreground leading-tight">{tile.name}</p>
     </div>
   </Link>
 );
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -62,6 +62,15 @@ const ProductDetail: React.FC = () => {
 
   // Reset active image when product changes
   useEffect(() => { setActiveImageIndex(0); }, [id]);
+
+  // Go back in history (preserves scroll + filters); fall back to /collection on direct entry
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/collection');
+    }
+  };
 
   const tile = useMemo(
     () => backendTiles.find((t) => String(t.id) === String(id)),
@@ -142,7 +151,7 @@ const ProductDetail: React.FC = () => {
           onClick={() => navigate('/collection')}
           className="text-xs uppercase tracking-widest font-black text-[#C8A96E] hover:text-foreground transition-colors"
         >
-          ← Back to Collection
+          â† Back to Collection
         </button>
       </div>
     );
@@ -159,8 +168,8 @@ const ProductDetail: React.FC = () => {
   return (
     <>
       <SEO
-        title={`${tile.name} — MH MARBLE`}
-        description={tile.description || `${tile.name} — a premium ${String(tile.category_name || tile.category || 'stone')} by MH MARBLE. ${tile.finish ? `Available in ${tile.finish} finish.` : ''}`}
+        title={`${tile.name} â€” MH MARBLE`}
+        description={tile.description || `${tile.name} â€” a premium ${String(tile.category_name || tile.category || 'stone')} by MH MARBLE. ${tile.finish ? `Available in ${tile.finish} finish.` : ''}`}
 
         type="product"
         breadcrumbs={[
@@ -179,7 +188,7 @@ const ProductDetail: React.FC = () => {
       <div className="min-h-screen bg-background text-foreground">
         <Header />
 
-        {/* ── Hero ── */}
+        {/* â”€â”€ Hero â”€â”€ */}
         <div ref={heroRef} className="relative h-[85vh] md:h-screen w-full overflow-hidden">
           {activeImage ? (
             <img
@@ -199,12 +208,12 @@ const ProductDetail: React.FC = () => {
 
           {/* Breadcrumb */}
           <div className="absolute top-28 left-6 md:left-16 z-10 flex items-center gap-3">
-            <Link
-              to="/collection"
+            <button
+              onClick={handleBack}
               className="text-[8px] font-black uppercase tracking-[0.3em] text-foreground/40 hover:text-[#C8A96E] transition-colors"
             >
               Collection
-            </Link>
+            </button>
             <span className="text-foreground/20 text-[8px]">/</span>
             <span className="text-[8px] font-black uppercase tracking-[0.3em] text-foreground/60">
               {categoryName}
@@ -227,7 +236,7 @@ const ProductDetail: React.FC = () => {
               </div>
               <div className="flex flex-col items-start md:items-end gap-2 shrink-0">
                 <span className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/30">
-                  {tile.finish || 'Polished'} · {tile.size || 'Custom Format'}
+                  {tile.finish || 'Polished'} Â· {tile.size || 'Custom Format'}
                 </span>
                 {tile.origin && (
                   <span className="text-sm font-serif italic text-foreground/50">{tile.origin}</span>
@@ -237,7 +246,7 @@ const ProductDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* ── Detail Content ── */}
+        {/* â”€â”€ Detail Content â”€â”€ */}
         <div className="max-w-[1400px] mx-auto px-6 md:px-16 py-16 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
 
           {/* Left: Description + Specs */}
@@ -339,24 +348,24 @@ const ProductDetail: React.FC = () => {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                <a
-                  href={`/contact?inquiry=${encodeURIComponent(tile.name)}&category=${encodeURIComponent(String(tile.category_name || tile.category || ''))}`}
+                <Link
+                  to={`/contact?inquiry=${encodeURIComponent(tile.name)}&category=${encodeURIComponent(String(tile.category_name || tile.category || ''))}`}
                   className="flex-1 flex items-center justify-center gap-3 px-6 py-4 bg-[#C8A96E] text-[#0C0A08] text-[9px] font-black uppercase tracking-[0.3em] hover:bg-foreground hover:text-background transition-colors duration-300"
                 >
                   Request Inquiry →
-                </a>
-                <Link
-                  to="/collection"
+                </Link>
+                <button
+                  onClick={handleBack}
                   className="flex-1 flex items-center justify-center gap-3 px-6 py-4 border border-foreground/[0.1] text-[9px] font-black uppercase tracking-[0.3em] text-foreground/50 hover:text-foreground hover:border-foreground/30 transition-colors duration-300"
                 >
-                  Back to Collection
-                </Link>
+                  ← Back to Collection
+                </button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* ── Related Products ── */}
+        {/* ——— Related Products ——— */}
         {related.length > 0 && (
           <div className="border-t border-foreground/[0.05] px-6 md:px-16 py-16 md:py-20 max-w-[1400px] mx-auto w-full">
             <div className="flex items-center justify-between mb-10">
@@ -372,7 +381,7 @@ const ProductDetail: React.FC = () => {
                 to="/collection"
                 className="hidden md:flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.3em] text-foreground/30 hover:text-[#C8A96E] transition-colors"
               >
-                View All →
+                View All â†’
               </Link>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
