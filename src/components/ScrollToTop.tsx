@@ -32,6 +32,7 @@ export default function ScrollToTop() {
   // 3. Handle route changes
   useEffect(() => {
     const cacheKey = location.key || (location.pathname + location.search);
+    const timers: number[] = [];
 
     if (navigationType === "POP") {
       const targetScrollY = scrollPositions[cacheKey] || 0;
@@ -86,6 +87,31 @@ export default function ScrollToTop() {
       };
 
       requestAnimationFrame(tryScroll);
+
+      // Also schedule correction scrolls after GSAP settles on the home page (at 400ms and 1000ms triggers)
+      if (location.pathname === "/") {
+        const runCorrection = () => {
+          const latestTargetScrollY = scrollPositions[cacheKey] || 0;
+          if (latestTargetScrollY > 0) {
+            isRestoringRef.current = true;
+            const lenis = (window as any).lenis;
+            if (lenis) {
+              lenis.scrollTo(latestTargetScrollY, { immediate: true });
+              if ((window as any).ScrollTrigger) {
+                (window as any).ScrollTrigger.update();
+              }
+            } else {
+              window.scrollTo(0, latestTargetScrollY);
+            }
+            setTimeout(() => {
+              isRestoringRef.current = false;
+            }, 50);
+          }
+        };
+
+        timers.push(window.setTimeout(runCorrection, 600));
+        timers.push(window.setTimeout(runCorrection, 1200));
+      }
     } else {
       // Push/Replace navigation: Reset to top
       const lenis = (window as any).lenis;
@@ -96,6 +122,10 @@ export default function ScrollToTop() {
       }
       isRestoringRef.current = false;
     }
+
+    return () => {
+      timers.forEach(clearTimeout);
+    };
   }, [location.pathname, location.search, navigationType]);
 
   return null;
