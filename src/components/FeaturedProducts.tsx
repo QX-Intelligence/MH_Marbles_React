@@ -109,6 +109,8 @@ import { useFeaturedProducts } from '@/hooks/useProducts';
 export function FeaturedProducts() {
   const { data: featuredProducts = [] } = useFeaturedProducts();
   const containerRef = useRef<HTMLDivElement>(null);
+  // Track if we've already dispatched the layout-ready event this mount cycle
+  const gsapReadyRef = useRef(false);
 
   const featured = useMemo(() => {
     // Strictly rely on backend API /products/featured/ response
@@ -117,6 +119,8 @@ export function FeaturedProducts() {
 
   useEffect(() => {
     if (featured.length === 0) return;
+
+    gsapReadyRef.current = false;
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
@@ -128,6 +132,13 @@ export function FeaturedProducts() {
           pin: true,
           anticipatePin: 1,
           refreshPriority: 5,
+          // Fired after GSAP creates the pin spacer (layout is now stable)
+          onRefresh: () => {
+            if (!gsapReadyRef.current) {
+              gsapReadyRef.current = true;
+              window.dispatchEvent(new CustomEvent('gsap-layout-ready'));
+            }
+          },
         }
       });
 
@@ -165,7 +176,10 @@ export function FeaturedProducts() {
 
     }, containerRef);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      gsapReadyRef.current = false;
+    };
   }, [featured]);
 
   if (featured.length === 0) return null;
