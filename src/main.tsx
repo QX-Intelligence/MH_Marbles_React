@@ -21,6 +21,8 @@ const lenis = new Lenis({
     smoothWheel: true,
 });
 
+(window as any).lenis = lenis;
+
 // Synchronize ScrollTrigger with Lenis
 lenis.on('scroll', () => ScrollTrigger.update());
 
