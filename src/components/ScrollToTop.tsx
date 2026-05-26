@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { useLocation, useNavigationType } from "react-router-dom";
 
 // Scroll position cache keyed by location.key
@@ -7,15 +7,20 @@ const scrollPositions: Record<string, number> = {};
 export default function ScrollToTop() {
   const location = useLocation();
   const navigationType = useNavigationType();
-  const activeKeyRef = useRef(location.key || (location.pathname + location.search));
-  const isRestoringRef = useRef(false);
+  
+  const currentKey = location.key || (location.pathname + location.search);
+  const activeKeyRef = useRef(currentKey);
+  
+  // Default to true to prevent initial mount/restore scroll events from corrupting the cache
+  const isRestoringRef = useRef(true);
 
-  // Keep the cache key current
-  useEffect(() => {
-    activeKeyRef.current = location.key || (location.pathname + location.search);
-  }, [location]);
+  // Synchronously lock scroll recording and update the active cache key on any route change
+  useLayoutEffect(() => {
+    activeKeyRef.current = currentKey;
+    isRestoringRef.current = true;
+  }, [currentKey]);
 
-  // Save scroll position continuously (skip during restoration)
+  // Save scroll position continuously (skip during restoration/route transitions)
   useEffect(() => {
     const handleScroll = () => {
       if (isRestoringRef.current) return;
@@ -27,14 +32,20 @@ export default function ScrollToTop() {
 
   // Handle route changes
   useEffect(() => {
-    const cacheKey = location.key || (location.pathname + location.search);
+    const cacheKey = currentKey;
 
     if (navigationType !== "POP") {
-      // Forward navigation → always scroll to top
+      // Forward navigation (PUSH/REPLACE) → always scroll to top
       const lenis = (window as any).lenis;
-      if (lenis) lenis.scrollTo(0, { immediate: true });
-      else window.scrollTo(0, 0);
-      isRestoringRef.current = false;
+      if (lenis) {
+        lenis.scrollTo(0, { immediate: true });
+      } else {
+        window.scrollTo(0, 0);
+      }
+      // Unlock after brief delay to let any lifecycle scroll events settle
+      setTimeout(() => {
+        isRestoringRef.current = false;
+      }, 50);
       return;
     }
 
@@ -42,12 +53,16 @@ export default function ScrollToTop() {
 
     if (targetScrollY === 0) {
       const lenis = (window as any).lenis;
-      if (lenis) lenis.scrollTo(0, { immediate: true });
-      else window.scrollTo(0, 0);
+      if (lenis) {
+        lenis.scrollTo(0, { immediate: true });
+      } else {
+        window.scrollTo(0, 0);
+      }
+      setTimeout(() => {
+        isRestoringRef.current = false;
+      }, 50);
       return;
     }
-
-    isRestoringRef.current = true;
 
     const scrollTo = (y: number) => {
       const lenis = (window as any).lenis;
@@ -61,11 +76,9 @@ export default function ScrollToTop() {
 
     let rafId: number;
     let startTime: number | null = null;
-    const MAX_WAIT_MS = 4000; // give up after 4s
+    const MAX_WAIT_MS = 3000; // give up after 3s
 
-    // ── Poll via rAF until the document is tall enough ──────────────────────
-    // This handles GSAP pin spacers: they inflate the body height AFTER mount.
-    // We keep retrying until the document can actually accommodate targetScrollY.
+    // Poll via requestAnimationFrame until the document is tall enough to accommodate targetScrollY
     const poll = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const elapsed = timestamp - startTime;
@@ -75,25 +88,30 @@ export default function ScrollToTop() {
         document.documentElement.scrollHeight
       );
 
-      if (docHeight >= targetScrollY + window.innerHeight) {
-        // Document is tall enough — scroll and we're done
+      // If document is tall enough, or if we have reached the maximum possible scroll height
+      if (
+        docHeight >= targetScrollY + window.innerHeight ||
+        window.scrollY + window.innerHeight >= docHeight - 10
+      ) {
         scrollTo(targetScrollY);
-        isRestoringRef.current = false;
+        setTimeout(() => {
+          isRestoringRef.current = false;
+        }, 100);
         return;
       }
 
       if (elapsed >= MAX_WAIT_MS) {
-        // Fallback: scroll to whatever we can reach
         scrollTo(Math.min(targetScrollY, docHeight - window.innerHeight));
-        isRestoringRef.current = false;
+        setTimeout(() => {
+          isRestoringRef.current = false;
+        }, 100);
         return;
       }
 
-      // Not ready yet — try again next frame
       rafId = requestAnimationFrame(poll);
     };
 
-    // Start polling next frame (let the page render first)
+    // Start polling on next animation frame
     rafId = requestAnimationFrame(poll);
 
     // Abort if user interacts manually
@@ -110,12 +128,11 @@ export default function ScrollToTop() {
 
     return () => {
       cancelAnimationFrame(rafId);
-      isRestoringRef.current = false;
       window.removeEventListener("wheel", abort);
       window.removeEventListener("touchmove", abort);
       window.removeEventListener("pointerdown", abort);
     };
-  }, [location.pathname, location.search, navigationType]);
+  }, [currentKey, navigationType]);
 
   return null;
 }
